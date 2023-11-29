@@ -1,0 +1,15 @@
+{% extends "teacher_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/profile.css')}}">
+{%endblock%}
+{%block content%}
+    <div id="profile_container">
+        <h1><b>Profile</b></h1>
+        <p><b>First Name:</b> {{first_name}}</p>
+        <p><b>Last Name:</b> {{last_name}}</p>
+        <p><b>Email:</b> {{email}}</p>
+        <div id="logoutBT"><button type="button" class="logout"><a href="{{url_for('logout')}}">Logout</a></button></div>
+    </div>
+{%endblock%}

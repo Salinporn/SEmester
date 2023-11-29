@@ -1,0 +1,53 @@
+{% extends "student_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/student_course.css')}}">
+{%endblock%}
+{%block content%}
+<div class="whole_page">
+    <div class="title">
+        <h1><b>{{course_name}}</b></h1>
+    </div>
+    <div class="course_info">
+        <button id="course_info_title" onclick="showDetail()">
+            Course Info
+            <p id="bt">+</p>
+        </button>
+        <span id="more">
+            <hr>
+            <p class="info">Course ID: {{course_id}} (Section: {{course_sec}})</p>
+            <p class="info">Teacher: {{course_teacher}}</p>
+            <p class="info">Credit: {{course_credit}}</p>
+            <p class="info">Course Code: {{course_code}}</p>
+        </span>
+    </div>
+    <div class="links">
+        <ul>
+            <li><a id="announcement" href="{{url_for('student_announcement', course_id=course_id, course_sec=course_sec)}}"><img id="announcement_icon" src="{{ url_for('static', path='annoncement_icon.svg') }}" /> Announcement</a></li>
+            <li><a id="attendance_overview" href="{{ url_for('student_attendance_overview') }}"><img id="attendance_icon" src="{{ url_for('static', path='attendance_icon.png') }}" /> Attendance</a></li>
+            <li><a id="assignment" href="{{url_for('student_assignment', course_id=course_id, course_sec=course_sec)}}"><img id="assignment_icon" src="{{ url_for('static', path='assignment_icon.png') }}" /> Assignment</a></li>
+            <li><a id="grade" href="{{ url_for('student_grade', course_id=course_id, course_sec=course_sec)}}"><img id="grade_icon" src="{{ url_for('static', path='grade_icon.png') }}" /> Grade</a></li>
+        </ul>
+    </div>
+    <script>
+        var showBtn = document.getElementById("course_info_title");
+        var moreText = document.getElementById("more");
+        var bt = document.getElementById("bt");
+
+        var current_display = "none";
+        
+        function showDetail() {
+            if (current_display == "none") {
+                current_display = "inline";
+                moreText.style.display = current_display;
+                bt.innerHTML = "-";
+            } else {
+                current_display = "none";
+                moreText.style.display = current_display;
+                bt.innerHTML = "+";
+            }
+        }
+    </script>
+</div>
+{%endblock%}

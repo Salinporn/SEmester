@@ -1,0 +1,106 @@
+{% extends "student_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/assignment_student.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="header">
+        <h1>Assignment</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div>
+    <div class="assignmentList" id="assignmentList">
+        <button type="button" class="showBT">
+            Forthcoming
+            <p class="showmore_less">+</p>
+        </button>
+        <span id="Forthcoming_content" class="more"></span>
+        <button type="button" class="showBT">
+            Past Due
+            <p class="showmore_less">+</p>
+        </button>
+        <span id="PastDue_content" class="more"></span>
+        <button type="button" class="showBT">
+            Graded
+            <p class="showmore_less">+</p>
+        </button>
+        <span id="Graded_content" class="more"></span>
+        <button type="button" class="showBT">
+            Completed
+            <p class="showmore_less">+</p>
+        </button>
+        <span id="Completed_content" class="more"></span>
+    </div>
+<div>
+<script>
+
+    function displayassignment(assignmentDict) {
+        let graded = document.getElementById("Graded_content");
+        let forthcoming = document.getElementById("Forthcoming_content");
+        let pastDue = document.getElementById("PastDue_content");
+        let completed = document.getElementById("Completed_content");
+        let date = new Date();
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        for (var key in assignmentDict) {
+            let innerHTML = "";
+            var assignment = assignmentDict[key];
+            var due_date_parts = assignment.due_date.split('-')
+            var due_time_parts = assignment.due_time.split(':')
+            innerHTML += "<div class='assignment'><b>" + assignment.topic + "</b> (Due Date: " + assignment.due_date + " " + assignment.due_time + " Score: " + assignment.score + ")<br><br>";
+            if (assignment.status == "Submitted" || assignment.status == "Graded") {
+                innerHTML += "<a class='assignment_link' href='/Student/Assignment/Completed/{{course_id}}/{{course_sec}}/" + key + "'>View Assignment</a><br></div>";
+                if (assignment.status == "Graded") {
+                    graded.innerHTML += innerHTML;
+                } else {
+                    completed.innerHTML += innerHTML;
+                }
+            } else {
+                innerHTML += "<a class='assignment_link' href='/Student/Assignment/{{course_id}}/{{course_sec}}/" + key + "'>View Assignment</a><br></div>";
+                if (year > due_date_parts[0] || year == due_date_parts[0] && month > due_date_parts[1] || year == due_date_parts[0] && month == due_date_parts[1] && day > due_date_parts[2] || year == due_date_parts[0] && month == due_date_parts[1] && day == due_date_parts[2] && hour > due_time_parts[0] || year == due_date_parts[0] && month == due_date_parts[1] && day == due_date_parts[2] && hour == due_time_parts[0] && minute > due_time_parts[1]) {
+                    pastDue.innerHTML += innerHTML;
+                } else {
+                    forthcoming.innerHTML += innerHTML;
+                }
+            }
+        }
+    }
+
+    displayassignment({{assignmentDict|tojson}});
+
+    var coll = document.getElementsByClassName("showBT");
+    
+    for (var i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        var more_less = this.querySelector(".showmore_less");
+        if (content.style.display == "none") {
+            content.style.display = "block";
+            more_less.innerHTML = "-";
+        } else {
+            content.style.display = "none";
+            more_less.innerHTML = "+";
+        }
+        });
+    }
+
+    function deleteassignment(topic) {
+        fetch('/api/delete-assignment/{{course_id}}/{{course_sec}}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ topic: topic }),
+        })
+        .then(response => {
+            location.reload();
+        });
+
+    }
+</script>
+{%endblock%}

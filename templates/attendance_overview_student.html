@@ -1,0 +1,42 @@
+{% extends "student_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/attendance_overview_student.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="header">
+        <h1>Attendance Overview</h1>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Course ID</th>
+                <th>Course Name</th>
+                <th>Present</th>
+                <th>Late</th>
+                <th>Absent</th>
+            </tr>
+        </thead>
+        <tbody class="attendanceList" id="attendanceList"></tbody>
+    </table>
+<div>
+<script>
+    function displayAttendanceOverview(attendanceDict) {
+        let attendanceList = document.getElementById("attendanceList");
+        innerHTML = "";
+        for (var key in attendanceDict) {
+            attendance = attendanceDict[key];
+            innerHTML += "<tr><td class='courseID'>" + key + "</td>";
+            innerHTML += "<td class='courseName'><a class='courseLink' href='/attendance-overview/" + key + "/" + attendance['sec'] + "'>";
+            innerHTML += attendance['name'] + " ( Section: " + attendance['sec'] + " )</a></td>";
+            innerHTML += "<td class='total_present'>" + attendance['totalPresent'] + "</td>";
+            innerHTML += "<td class='total_late'>" + attendance['totalLate'] + "</td>";
+            innerHTML += "<td class='total_absent'>" + attendance['totalAbsent'] + "</td></tr>";
+        }
+        attendanceList.innerHTML = innerHTML;
+    }
+    displayAttendanceOverview({{attendanceDict|tojson}});
+</script>
+{%endblock%}

@@ -1,0 +1,77 @@
+{% extends "student_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/home_student.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div id="bttn">
+        <button type="button" id="joinButton" onclick="openPopUp()">Join Course</button>
+    </div>
+    <div id="courseList"></div>
+    <div class="popup" id="popup">
+        <form class="courseJoin" method="POST" action="/home_student">
+            <label for="course_code">Enter Course Code: </label>
+            <input type="text" id="course_code" name="course_code" placeholder="XXXX"><br><br>
+            <button type="button" id="cancelBT" onclick="closePopUp()">Cancel</button>
+            <button type="submit" id="submitBT" onclick="closePopUp()">Join</button>
+        </form>
+    </div>
+</div>
+<div class="bottomBanner">
+    <div class="aboutUsBanner">
+        <h2 class=bannerHD><u>About us</u><h2>
+        <label class="info"><b>SEmester</b> is specifically designed to empower students with efficient course management capabilities. With an intuitive interface, it simplifies access to academic performance metrics and facilitates hassle-free assignment submissions. For educators, SEmester streamlines their workload by providing tools for task assignments, attendance tracking, and detailed insights into individual student progress. SEmester is a valuable resource for both students and teachers alike, fostering an organized and conducive learning environment.</label>
+    </div>
+    <div class="contactBanner">
+        <h2 class=bannerHD><u>Contact us</u><h2>
+        <label class="info"><b>Phone Number:</b> 02-329-8000</label><br>
+        <label class="info"><b>E-mail:</b> pr.kmitl@kmitl.ac.th</label><br>
+        <label class="info"><b>Address:</b> Faculty of Engineering, King Mongkut's Institute of Technology Ladkrabang. No. 1, Chalong Krung 1, Chalong Krung Road, Lat Krabang Sub-district, Lat Krabang District, Bangkok , 10520, Thailand.</label>
+    </div>
+</div>
+<script>
+    var popup = document.getElementById("popup");
+
+    function openPopUp() {
+        popup.classList.add("open_popup");
+    }
+
+    function closePopUp() {
+        popup.classList.remove("open_popup");
+    }
+
+    function displayCourses(courseDict) {
+        let courseList = document.getElementById("courseList");
+        innerHTML = "";
+        for (var key in courseDict) {
+            var course = courseDict[key];
+            
+            innerHTML += "<div class='courseBox'><a href='/Student/Course/" + course.id + "/" + course.section + "' class='courseName'><h1><b>" + course.name + "</b></h1></a><div class='unenrollBT'><button type='button' class='remove_button' onclick='unenroll(" + course.id + ", " + course.section + ")'>Unenroll</button></div><br><p class='courseID'>" 
+                + course.id + " ( Section:" + course.section + ")</p><br><div class='links'>" + "<a class='gradeLink' href='/Student/Grade/" + course.id + "/" + course.section + "'>GRADE</a>" +
+                "<a class='assignmentLink' href='/Student/Assignment/" + course.id + "/" + course.section + "'>ASSIGNMENT</a>" +
+                "<a class='announcementLink' href='/Student/Announcement/" + course.id + "/" + course.section + "'>ANNOUNCEMENT</a></div></div>";
+        }
+        courseList.innerHTML = innerHTML;
+    }
+
+    displayCourses({{courseDict|tojson}});
+
+    function unenroll(courseID, section) {
+        fetch('/api/unenroll_home_student', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'courseID': courseID,
+                'section': section
+            })
+        })
+        .then(response => {
+            location.reload();
+        });
+    }
+</script>
+{%endblock%}

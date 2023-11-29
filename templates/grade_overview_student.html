@@ -1,0 +1,74 @@
+{% extends "student_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/grade_overview_student.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="header">
+        <h1>Grade Overview</h1>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Course ID</th>
+                <th>Courses</th>
+                <th>Credits</th>
+                <th>Current Scores</th>
+                <th>Grades</th>
+            </tr>
+        </thead>
+        <tbody class="courseList" id="courseList"></tbody>
+    </table>
+    <div id="graphDiv">
+        <canvas id="myChart"></canvas>
+    </div>
+<div>
+<script>
+    function displayGradeOverview(courseDict) {
+        let courseList = document.getElementById("courseList");
+        let innerHTML = "";
+        for (var key in courseDict) {
+            course = courseDict[key];
+            innerHTML += "<tr>";
+            innerHTML += "<td class='id'>" + key +"</td>";
+            innerHTML += "<td class='name'>" + course['name'] +"</td>";
+            innerHTML += "<td class='credit'>" + course['credit'] +"</td>";
+            innerHTML += "<td class='current_score'>" + course['currentScore'] +"</td>";
+            innerHTML += "<td class='grade'>" + course['grade'] +"</td>";
+            innerHTML += "</tr>";
+        }
+        courseList.innerHTML = innerHTML;
+    }
+    displayGradeOverview({{ courseDict | tojson }});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+        labels: ['A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'F'],
+        datasets: [{
+            label: "Grade range",
+            data: {{grades | tojson}},
+            borderWidth: 1
+        }]
+        },
+        options: {
+        scales: {
+            y: {
+            beginAtZero: true,
+            ticks: {
+                stepSize: 5
+            }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+        }
+    });
+</script>
+{%endblock%}

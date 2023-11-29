@@ -1,0 +1,113 @@
+{% extends "teacher_header.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/attendance_teacher.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="wholePage">
+    <div class="backBtn">
+        <button type="button" class="backBT" id="backBT" class="saveButton" onclick="window.location.href='/Teacher/Attendance/{{course_id}}/{{course_sec}}'"><img src="{{ url_for('static', path='arrow_icon.png') }}"></button>    
+    </div>
+    <div class="header">
+        <h1 class="hd">Attendance</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div>
+    <form class='statusForm' method='POST' action='/Teacher/Attendance/{{course_id}}/{{course_sec}}/{{date}}'>
+        <table>
+            <thead>
+                <tr>
+                    <th class="id">Student ID</th>
+                    <th class="name">Name</th>
+                    <th class="status">Status</th>
+                    <th class="remark">Remarks</th>
+                </tr>
+            </thead>
+            <tbody id="studentsList"></tbody>
+        </table><br>
+        <button type=submit id="saveBTN">Save</button>
+    </form>
+    <div class="summary">
+        <h2>Summary</h2>
+        <label id="totalPresentLB">Total Present: </label>
+        <label id="totalPresent">{{totalPresent}}</label><br>
+        <label id="totalLateLB">Total Late: </label>
+        <label id="totalLate">{{totalLate}}</label><br>
+        <label id="totalAbsentLB">Total Absent: </label>
+        <label id="totalAbsent">{{totalAbsent}}</label><br>
+    </div>
+    <div id="graphDiv">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+<script>
+    function switchSU() {
+        var lateAbsentAllowedDiv = document.getElementById("lateAbsentAllowedDiv");
+        var switchCheckbox = document.getElementById("switch");
+
+        if (switchCheckbox.checked) {
+            lateAbsentAllowedDiv.style.display = "block";
+        } else {
+            lateAbsentAllowedDiv.style.display = "none";
+        }
+    }
+
+    function displayStudentStatus(attendanceDict) {
+        var studentsList = document.getElementById("studentsList");
+        var innerHTML = "";
+        for (var key in attendanceDict) {
+            var attendance = attendanceDict[key];
+            var remark = attendance['remark'];
+            var status = attendance['status'];
+            if (remark == null) {
+                remark = "";
+            }
+            innerHTML += "<tr>";
+            innerHTML += "<td class='id'>" + key + "</td>";
+            innerHTML += "<td class='name'>" + attendance['name'] + "</td>";
+            innerHTML += `<td class="status"><select id="statusSelect" class="statusSelect" name="status_${key}">`;
+            if (status == "present") {
+                innerHTML += "<option value='present' selected>present</option><option value='late'>late</option><option value='absent'>absent</option></select></td>";
+            } else if (status == "late") {
+                innerHTML += "<option value='present'>present</option><option value='late' selected>late</option><option value='absent'>absent</option></select></td>";
+            } else if (status == "absent") {
+                innerHTML += "<option value='present'>present</option><option value='late'>late</option><option value='absent' selected>absent</option></select></td>";
+            }
+            innerHTML += `<td class='remark'><input type='text' name='remark_${key}' class='remarkInput' value="${remark}"></td>`;
+            innerHTML += "</tr>";
+        }
+        studentsList.innerHTML += innerHTML;
+    }
+    displayStudentStatus({{attendanceDict|tojson}});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+        labels: ['Present', 'Late', 'Absent'],
+        datasets: [{
+            label: "# of Students' Attendance",
+            data: [{{totalPresent}}, {{totalLate}}, {{totalAbsent}}],
+            borderWidth: 1
+        }]
+        },
+        options: {
+        scales: {
+            y: {
+            beginAtZero: true,
+            ticks: {
+                stepSize: 5
+            }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+        }
+    });
+</script>
+{% endblock %}

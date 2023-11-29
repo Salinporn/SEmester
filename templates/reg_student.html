@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/register.css') }}">
+</head>
+
+<body>
+    <form class="regInfo" method="POST" action="/reg_student">
+        <h1>CREATE AN ACCOUNT</h1>
+        <div class="information">
+            <label>Firstname: </label><br>
+            <input class="txt_input" type="text" name="first_name"><br><br>
+            <label>Lastname: </label><br>
+            <input class="txt_input" type="text" name="last_name"><br><br>
+            <label>Student ID: </label><br>
+            <input class="txt_input" type="text" name="id"><br><br>
+            <label>Email: </label><br>
+            <input class="txt_input" type="text" name="email"><br><br>
+            <label>Password: </label><br>
+            <input class="txt_input" id="password" name="password" type="password"><br>
+            <div class="checkboxes">
+                <input class="pwd" type="checkbox" onclick="showPassword('pass')">
+                <label class="pwd">Show Password</label><br><br>
+            </div>
+            <label>Confirm Password: </label><br>
+            <input class="txt_input" id="checkpassword" name="confirm_password" type="password"><br>
+            <div class="checkboxes">
+                <input class="pwd" type="checkbox" onclick="showPassword('check')">
+                <label class="pwd">Show Password</label><br><br>
+            </div>
+        </div>
+        <div class="button">
+            <button type="button" class="back" onclick="previousPage()">Back</button>
+            <button type="submit">Register</button>
+        </div>
+    </form>
+</body>
+<script>
+    function previousPage() {
+        link = "{{url_for('register')}}"
+        window.location.href = link;
+    }
+
+    function showPassword(box) {
+        if (box == 'pass') {
+            var x = document.getElementById("password");
+        } else {
+            var x = document.getElementById("checkpassword");
+        }
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+</script>
+
+</html>

@@ -1,0 +1,174 @@
+{% extends "student_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/assignment_submission_completed.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="backBtn">
+        <button type="button" class="backBT" id="backBT" class="saveButton" onclick="window.location.href='/Student/Assignment/{{course_id}}/{{course_sec}}'"><img src="{{ url_for('static', path='arrow_icon.png') }}"></button>    
+    </div>
+    <div class="header">
+        <h1>Assignment</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div><br>
+    <div id="assignmentDetail">
+        <h2>{{assignment_name}} </h2>
+        <p id="total_score">Score: {{assignment_score}}</p>
+        <p id="due_date">Due Date: {{due_date}} {{due_time}}</p><br>
+        <p id="description"> {{description}}</p>
+        <div id="attachment"></div>
+        <div id="submitted">
+            <p id="submitted_date"><b>Submitted Date: </b>{{submitted_date}}</p>
+            <p id="submitted_time"><b>Submitted Time: </b>{{submitted_time}}</p>
+            <div id="submittedFile"></div><br>
+            <div id='scoreReceived'></div> 
+        </div>
+        <button type="button" id="unsubmit" onclick="unsubmit('{{code}}')">Unsubmit</button>
+        <button id="codeDisplay" onclick="codeDisplay()">Code Preview</button>
+    </div>
+    <div id="editor_block">
+        <div id="editor_option">
+            <label id="file_list">File: </label>
+            <select id="files">
+                <option disabled selected value> -- select an option -- </option>
+            </select>
+        </div>
+        <div id= "editor_container">
+            <div id="editor">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var display = false;
+
+    function files(file) {
+        var attachment = document.getElementById("attachment");
+        var innerHTML = "";
+        var filenames = file.filename;
+        if (filenames != []) {
+            for (var i = 0; i < filenames.length; ++i) {
+                innerHTML += "<p><img src='{{url_for('static',path='clip_icon.png')}}' class='clip_icon'/><a href='/static/assignment/uploaded/" + {{course_id}} +"/" + {{course_sec}} + "/" + filenames[i] + "' download>" + filenames[i] + "</a></p>"
+            }
+            attachment.innerHTML = innerHTML;
+        }
+    }
+
+    function submittedFile(file) {
+        var attachment = document.getElementById("submittedFile");
+        var innerHTML = "";
+        var filenames = file.filename;
+        if (filenames != []) {
+            for (var i = 0; i < filenames.length; ++i) {
+                innerHTML += "<p><img src='{{url_for('static',path='clip_icon.png')}}' class='clip_icon'/><a href='/static/assignment/uploaded/" + {{course_id}} +"/" + {{course_sec}} + "/Student/" + filenames[i] + "' download>" + filenames[i] + "</a></p>"
+            }
+            attachment.innerHTML = innerHTML;
+        }
+    }
+
+    files({{filenames | tojson}});
+    submittedFile({{submitted_filenames | tojson}});
+
+    function codeDisplay() {
+        fileOption();
+        var editor = document.getElementById("editor_block");
+        if (display == false) {
+            editor.style.display = "block";
+            display = true;
+        } else {
+            editor.style.display = "none";
+            display = false;
+        }
+    }
+
+    function unsubmit(topic) {
+        var r = confirm("Are you sure to unsubmit?");
+        if (r == true) {
+            fetch('/api/delete-assignment-submission/{{course_id}}/{{course_sec}}/{{code}}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ topic: topic }),
+            })
+            .then(response => {
+                window.location.href = "/Student/Assignment/{{course_id}}/{{course_sec}}/{{code}}";
+            });
+        }
+    }
+
+    function showScore(status, score, comment) {
+        var scoreReceived = document.getElementById("scoreReceived");
+        if (status == "Graded") {
+            scoreReceived.innerHTML = "<p id='score'><b>Score: </b><p class='result'>" + score + "</p></p><p id='comment'><b>Comment: </b><p class='result'>" + comment + "</p></p>";
+        } else {
+            scoreReceived.innerHTML = "<p id='score'><b>Score: </b><p class='result'>Not Graded</p></p><p id='comment'><b>Comment: </b><p class='result'>Not Graded</p></p>";
+        }
+    }
+
+    function fileOption() {
+        var files = document.getElementById("files");
+        var file = {{submitted_filenames | tojson}};
+        var filenames = file.filename;
+        var innerHTML = "";
+        if (filenames != []) {
+            for (var i = 0; i < filenames.length; ++i) {
+                innerHTML += "<option value='" + filenames[i] + "'>" + filenames[i] + "</option>"
+            }
+            files.innerHTML += innerHTML;
+        }
+    }
+
+    showScore("{{status}}", "{{score_receive}}", "{{comment}}");
+    
+</script>
+<script src= "{{url_for('static',path='/js/ace.js')}}"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/one_dark");
+    editor.session.setMode("ace/mode/javascript");
+    
+    var files = document.getElementById("files");
+
+    files.addEventListener("change", function() {
+        var lastName = files.options[files.selectedIndex].value.split('.')[1];
+        var mode = "";
+        if (lastName == "js") {
+            mode = "javascript";
+        } else if (lastName == "py") {
+            mode = "python";
+        } else if (lastName == "java" || lastName == "Java") {
+            mode = "java";
+        } else if (lastName == "c") {
+            mode = "c_cpp";
+        } else if (lastName == "cpp") {
+            mode = "c_cpp";
+        } else if (lastName == "html") {
+            mode = "html";
+        } else if (lastName == "css") {
+            mode = "css";
+        } else if (lastName == "r" || lastName == "R") {
+            mode = "r";
+        } else if (lastName == "rs") {
+            mode = "rust";
+        } else if (lastName == "json") {
+            mode = "json";
+        } else if (lastName == "txt") {
+            mode = "text";
+        }
+        editor.session.setMode("ace/mode/" + mode);
+
+        var file = {{submitted_filenames | tojson}};
+        var filenames = file.filename;
+        var fileContent = file.content;
+        var selectedFile = files.options[files.selectedIndex].value;
+        for (c in fileContent) {
+            if (c == selectedFile) {
+                editor.setValue(fileContent[c]);
+            }
+        }
+    });
+</script>
+{%endblock%}

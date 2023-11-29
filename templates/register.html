@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/register.css') }}">
+</head>
+<body>
+    <div class="roleInfo">
+        <h1>REGISTRATION</h1>
+        <label>CHOOSE YOUR ROLE</label><br><br><br>
+        <label class="student" onclick="student()">Student</label><br><br><br>
+        <label class="teacher" onclick="teacher()">Teacher</label><br><br><br>
+        <div class="button">
+            <button class="back" onclick="previousPage()">Back</button>
+            <button class="next" onclick="nextPage()">Next</button>
+        </div>
+    </div>
+</body>
+<script>
+    var selected = "";
+
+    function student() {
+        document.getElementsByClassName("student")[0].style.backgroundColor = "#ffceaf";
+        document.getElementsByClassName("teacher")[0].style.backgroundColor = "white";
+        selected = "student";
+    }
+    
+    function teacher() {
+        document.getElementsByClassName("teacher")[0].style.backgroundColor = "#ffceaf";
+        document.getElementsByClassName("student")[0].style.backgroundColor = "white";
+        selected = "teacher";
+    }
+
+    function nextPage() {
+        // might add some line to store data
+        if (selected == "student") {
+            link = "{{url_for('reg_student')}}";
+            window.location.href = link;
+        } else if (selected == "teacher") {
+            link = "{{url_for('reg_teacher')}}";
+            window.location.href = link;
+        } else {
+            alert("Please select your role!");
+        }
+    }
+
+    function previousPage() {
+        link = "{{url_for('login')}}";
+        window.location.href = link;
+    }
+</script>
+</html>

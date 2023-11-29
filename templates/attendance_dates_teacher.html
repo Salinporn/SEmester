@@ -1,0 +1,68 @@
+{% extends "teacher_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/attendance_dates_teacher.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="header">
+        <h1>Attendance</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div>
+    <div class="classBtn">
+        <button type="button" class="btn" onclick="openPopUp()">Create Attendance</button>
+    </div>
+    <div class="attendanceDatesList" id="attendanceDatesList"></div>
+    <div id="popUp" class="popUp">
+        <h2>Create Attendance</h2>
+        <form class="createAttendanceForm" method="POST" action="/Teacher/Attendance/{{course_id}}/{{course_sec}}">
+            <label for="topic" class="topicLB">Select date: </label>
+            <input type="date" id="date" name="date" class="topicTB" required>
+            <div class="buttons">
+                <button type="submit" id="addBT" onclick="closePopUp()">Create</button>
+                <button type="button" id="cancelBT" onclick="closePopUp()">Cancel</button>
+            </div>
+        </form>
+    <div>
+<div>
+<script>
+    let popUp = document.getElementById("popUp");
+
+    function openPopUp() {
+        popUp.classList.add("open_popup");
+    }
+
+    function closePopUp() {
+        popUp.classList.remove("open_popup");
+    }
+
+    function displayAttendanceDates(attendanceDatesDict) {
+        let attendanceDatesList = document.getElementById("attendanceDatesList");
+        let innerHTML = "";
+        for (var date in attendanceDatesDict) {
+            var parts = date.split('/');
+            var formattedDate = parts[0] + '-' + parts[1] + '-' + parts[2];
+            innerHTML += "<div class='date'><div class='dateInfo'><a class='Link' href='/Teacher/Attendance/" + {{course_id}} +"/" + {{course_sec}} + "/" + formattedDate + "'>" + date + "</a></div>";
+            innerHTML += "<div class='removeBtn'><button type='button' id='removeBT' onclick='removeDate(\"" + formattedDate + "\")'>Remove</button></div></div>";
+        }
+        attendanceDatesList.innerHTML = innerHTML;
+    }
+    displayAttendanceDates({{attendanceDate|tojson}});
+
+    function removeDate(date) {
+        fetch(`/api/delete-attendanceDate/{{course_id}}/{{course_sec}}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                date: date.replace(/-/g, '/')
+            })
+        })
+        .then(response => {
+            location.reload();
+        });
+    }
+</script>
+{%endblock%}

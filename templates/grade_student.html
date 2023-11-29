@@ -1,0 +1,43 @@
+{% extends "student_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/grade_student.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="header">
+        <h1>Grade</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th class='details'>Details</th>
+                <th>Weight(%)</th>
+                <th>Total Score</th>
+                <th>Mean</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody class="assignmentList" id="assignmentList"></tbody>
+    </table>
+<div>
+<script>
+    function displayGradeOverview(assignmentDict) {
+        let assignmentList = document.getElementById("assignmentList");
+        let innerHTML = "";
+        for (var key in assignmentDict) {
+            assignment = assignmentDict[key];
+            innerHTML += "<tr>";
+            innerHTML += "<td>" + assignment.topic + "</td><td>" + assignment.weight + "</td><td>" + assignment.total_score + "</td><td>" + assignment.mean + "</td><td>" + assignment.min + "</td><td>" + assignment.max + "</td><td>" + assignment.score + "</td>";
+            innerHTML += "</tr>";
+        }
+        assignmentList.innerHTML = innerHTML;
+    }
+
+    displayGradeOverview({{assignmentDict|tojson}});
+</script>
+{%endblock%}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Log In</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/login.css') }}">
+</head>
+<body>
+    <form class="loginForm" method="Post" action="/login">
+        <h1>LOG IN</h1>
+        <p>SIGN IN TO CONTINUE</p>
+        <input class="userinfo" type="text" placeholder="Email" name="username"><br><br>
+        <input class="userinfo" type="password" placeholder="Password" name="password"><br>
+        <div class="showPWD">
+            <input type="checkbox" onclick="showPassword()">
+            <label>Show Password</label><br>
+        </div>
+        <button type="submit">Login</button><br><br>
+        <div class="reg">
+            <label>Don't have an account? Register </label>
+            <a href="{{ url_for('register') }}"  class="regLink">here</a><br>
+        </div>
+    </form>
+</body>
+<script>
+    function showPassword() {
+        var x = document.getElementsByClassName("userinfo")[1];
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        } 
+    }
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const username = document.querySelector('input[name="username"]').value;
+        const password = document.querySelector('input[name="password"]').value;
+
+        if (!username || !password) {
+            alert("Please fill out all fields");
+            event.preventDefault();
+        }
+    });
+</script>
+</html>

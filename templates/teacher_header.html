@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>SEmester</title>
+    {%block head%}
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/header.css') }}">
+    {% endblock %}
+</head>
+<body>
+    <div class= "container">
+        <div class="banner"><img src="{{ url_for('static', path='/SEmesterBanner.png') }}" /></div>
+        <div class="background">
+            <div class="tabs">
+                <div id="courses"><a href="{{ url_for('teacher_home') }}"><b>COURSES</b></a></div>
+                <div id="grades"><a href="{{ url_for('teacher_grade_overview') }}"><b>GRADE OVERVIEW</b></a></div>
+                <div id="attendance"></div>
+                <div id="space"></div>
+                <div class="login">
+                    <button class="profile"><u>{{email}}</u></button>
+                    <div class="dropdown_content">
+                        <a href="{{ url_for('profile') }}">Profile</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </div>
+            </div>
+            {%block content%}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+{% extends "teacher_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/home_teacher.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="classBtn">
+        <button type="button" class="btn" onclick="openPopUp()">Create Course</button>
+    </div>
+    <div id="courseList"></div>
+        <div id="popUp" class="popUp">
+            <h2 class="popUpHeader">Create Course</h2>
+            <form class="courseForm" method="POST" action="/home_teacher">
+                <label for="course_name">Course Name: </label><br>
+                <input type="text" id="course_name" name="course_name"><br><br>
+                <label for="course_id">Course ID: </label><br>
+                <input type="text" id="course_id" name="course_id"><br><br>
+                <label for="course_section">Course Section: </label><br>
+                <input type="text" id="course_section" name="course_section"><br><br>
+                <label for="course_credit">Course Credit: </label><br>
+                <input type="text" id="course_credit" name="course_credit"><br><br>
+                <div class="buttons">
+                    <button type="submit" id="createBT" onclick="closePopUp()">Create</button>
+                    <button type="button" id="cancelBT" onclick="closePopUp()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="bottomBanner">
+    <div class="aboutUsBanner">
+        <h2 class=bannerHD><u>About us</u><h2>
+        <label class="infoBanner"><b>SEmester</b> is specifically designed to empower students with efficient course management capabilities. With an intuitive interface, it simplifies access to academic performance metrics and facilitates hassle-free assignment submissions. For educators, SEmester streamlines their workload by providing tools for task assignments, attendance tracking, and detailed insights into individual student progress. SEmester is a valuable resource for both students and teachers alike, fostering an organized and conducive learning environment.</label>
+    </div>
+    <div class="contactBanner">
+        <h2 class=bannerHD><u>Contact us</u><h2>
+        <label class="infoBanner"><b>Phone Number:</b> 02-329-8000</label><br>
+        <label class="infoBanner"><b>E-mail:</b> pr.kmitl@kmitl.ac.th</label><br>
+        <label class="infoBanner"><b>Address:</b> Faculty of Engineering, King Mongkut's Institute of Technology Ladkrabang. No. 1, Chalong Krung 1, Chalong Krung Road, Lat Krabang Sub-district, Lat Krabang District, Bangkok , 10520, Thailand.</label>
+    </div>
+</div>
+<script>
+    let popUp = document.getElementById("popUp");
+
+    function openPopUp() {
+        popUp.classList.add("open_popup");
+    }
+
+    function closePopUp() {
+        popUp.classList.remove("open_popup");
+    }
+    
+    function displayCourses(courseDict) {
+        let courseList = document.getElementById("courseList");
+        innerHTML = "";
+        for (var key in courseDict) {
+            var course = courseDict[key];
+            
+            innerHTML += "<div class='courseBox'><a href='/Teacher/Course/" + course.id + "/" + course.section + "' class='courseName'><h1><b>" 
+                + course.name + "</b></h1></a><br><p class='courseID'>" + course.id + " ( Section: " + course.section + " )</p><br><div class='links'>" 
+                + "<a class='attendanceLink' href='/Teacher/Attendance/" + course.id + "/" + course.section + "'>ATTENDANCE</a>"
+                + "<a class='gradeLink' href='/Teacher/Grade/" + course.id + "/" + course.section + "'>GRADE</a>" +
+                "<a class='assignmentLink' href='/Teacher/Assignment/" + course.id + "/" + course.section + "'>ASSIGNMENT</a>" +
+                "<a class='announcementLink' href='/Teacher/Announcement/" + course.id + "/" + course.section + "'>ANNOUNCEMENT</a></div></div>";
+        }
+        courseList.innerHTML = innerHTML;
+    }
+
+    displayCourses({{courseDict|tojson}});
+</script>
+{%endblock%}

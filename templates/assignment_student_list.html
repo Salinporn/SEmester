@@ -1,0 +1,90 @@
+{% extends "teacher_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/assignment_student_list.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="backBtn">
+        <button type="button" class="backBT" id="backBT" class="saveButton" onclick="window.location.href='/Teacher/Assignment/{{course_id}}/{{course_sec}}'"><img src="{{ url_for('static', path='arrow_icon.png') }}"></button>    
+    </div>
+    <div class="header">
+        <h1>Assignment: {{assignment_name}}</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div><br>
+    <div class="studentList" id="studentList">
+        <button type="button" class="showBT">
+            Not Turned in
+            <p class="showmore_less">+</p>
+        </button>
+        <span id="noSubmission_content" class="more"></span>
+        <button type="button" class="showBT">
+            Turned in
+            <p class="showmore_less">+</p>
+        </button>
+        <span id="submitted_content" class="more"></span>
+        <button type="button" class="showBT">
+            Late
+            <p class="showmore_less">+</p>
+        </button>
+        <span id="late_content" class="more"></span>
+        <button type="button" class="showBT">
+            Graded
+            <p class="showmore_less">+</p>
+        </button>
+        <span id="Graded_content" class="more"></span>
+    </div>
+<div>
+<script>
+
+    function displayassignment(studentDict) {
+        let noSub = document.getElementById("noSubmission_content");
+        let submitted = document.getElementById("submitted_content");
+        let late = document.getElementById("late_content");
+        let graded = document.getElementById("Graded_content");
+        for (var key in studentDict) {
+            let innerHTML = "";
+            var assignment = studentDict[key];
+            console.log(assignment.submit_date);
+            var submit_date_parts = assignment.submit_date.split('/')
+            var submit_time_parts = assignment.submit_time.split(':')
+            var due_date_parts = assignment.due_date.split('-')
+            var due_time_parts = assignment.due_time.split(':')
+            innerHTML += "<div class='assignment'><p class='name'>" + assignment.name + " ID: " + key + "</p>";
+            if (assignment.status == "Not submitted") {
+                innerHTML += "</div>"
+                noSub.innerHTML += innerHTML;
+            } else {
+                innerHTML += "<button button='button' class='checkBT' onclick='window.location.href=&#39;/Teacher/Assignment/{{course_id}}/{{course_sec}}/{{code}}/"+ key +"&#39;'>Check</button></div>";
+                if (assignment.status == "Submitted" && (submit_date_parts[2] > due_date_parts[0] || (submit_date_parts[2] == due_date_parts[0] && submit_date_parts[1] > due_date_parts[1]) || (submit_date_parts[2] == due_date_parts[0] && submit_date_parts[1] == due_date_parts[1] && submit_date_parts[0] > due_date_parts[2]) || (submit_date_parts[2] == due_date_parts[0] && submit_date_parts[1] == due_date_parts[1] && submit_date_parts[0] == due_date_parts[2] && submit_time_parts[0] > due_time_parts[0]) || (submit_date_parts[2] == due_date_parts[0] && submit_date_parts[1] == due_date_parts[1] && submit_date_parts[0] == due_date_parts[2] && submit_time_parts[0] == due_time_parts[0] && submit_time_parts[1] > due_time_parts[1]))) {
+                    late.innerHTML += innerHTML;
+                } else if (assignment.status == "Submitted") {
+                    submitted.innerHTML += innerHTML;
+                } else {
+                    graded.innerHTML += innerHTML;
+                }
+            }
+        }
+    }
+
+    displayassignment({{studentDict|tojson}});
+
+    var coll = document.getElementsByClassName("showBT");
+    
+    for (var i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        var more_less = this.querySelector(".showmore_less");
+        if (content.style.display == "none") {
+            content.style.display = "block";
+            more_less.innerHTML = "-";
+        } else {
+            content.style.display = "none";
+            more_less.innerHTML = "+";
+        }
+        });
+    }
+</script>
+{%endblock%}

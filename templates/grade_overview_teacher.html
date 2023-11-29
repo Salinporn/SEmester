@@ -1,0 +1,44 @@
+{% extends "teacher_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/grade_overview_teacher.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="header">
+        <h1>Grade Overview</h1>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th class='course_name'>Courses</th>
+                <th class='credit'>Credits</th>
+                <th class='mean_score'>Mean</th>
+                <th class='min_score'>Min</th>
+                <th class='max_score'>Max</th>
+            </tr>
+        </thead>
+        <tbody class="courseList" id="courseList"></tbody>
+    </table>
+<div>
+<script>
+    function displayGradeOverview(courseDict) {
+        let courseList = document.getElementById("courseList");
+        let innerHTML = "";
+        for (var key in courseDict) {
+            let course = courseDict[key];
+            innerHTML += "<tr>";
+            innerHTML += "<td class='course_name'><a class='courseGradeLink' href='/Teacher/Grade/" + key + "/" + course["sec"] + "'>" 
+            innerHTML += course['name'] + " ( Section: " + course['sec'] + " )</a></td>";
+            innerHTML += "<td class='credit'>" + course['credit'] + "</td>";
+            innerHTML += "<td class='mean_score'>" + course['mean_score'] + "</td>";
+            innerHTML += "<td class='min_score'>" + course['min_score'] + "</td>";
+            innerHTML += "<td class='max_score'>" + course['max_score'] + "</td>";
+            innerHTML += "</tr>";
+        }
+        courseList.innerHTML = innerHTML;
+    }
+    displayGradeOverview({{ courseDict | tojson }});
+</script>
+{%endblock%}

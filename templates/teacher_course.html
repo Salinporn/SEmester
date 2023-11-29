@@ -1,0 +1,146 @@
+{% extends "teacher_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/teacher_course.css')}}">
+{%endblock%}
+{%block content%}
+<div class="whole_page">
+    <div class="title">
+        <h1><b>{{course_name}}</b></h1>
+    </div>
+    <div class="course_info">
+        <button id="course_info_title" onclick="showDetail()">
+            Course Info
+            <p id="bt">+</p>
+        </button>
+        <span id="more">
+            <hr>
+            <p class="info">Course ID: {{course_id}} (Section: {{course_sec}})</p>
+            <p class="info">Teacher: {{course_teacher}}</p>
+            <p class="info">Credit: {{course_credit}}</p>
+            <p class="info">Course Code: {{course_code}}</p>
+        </span>
+    </div>
+    <div class="links">
+        <ul>
+            <li><a id="announcement" href="{{url_for('teacher_announcement', course_id=course_id, course_sec=course_sec)}}"><img id="announcement_icon" src="{{ url_for('static', path='annoncement_icon.svg') }}" /> Announcement</a></li>
+            <li><a id="attendance_link" href="{{url_for('teacher_attendace_dates', course_id=course_id, course_sec=course_sec)}}"><img id="attendance_icon" src="{{ url_for('static', path='attendance_icon.png') }}" /> Attendance</a></li>
+            <li><a id="assignment_link" href="{{url_for('teacher_assignment', course_id=course_id, course_sec=course_sec)}}"><img id="assignment_icon" src="{{ url_for('static', path='assignment_icon.png') }}" /> Assignment</a></li>
+            <li><a id="grade_link" href="{{url_for('teacher_grade_by_assignment', course_id=course_id, course_sec=course_sec)}}"><img id="grade_icon" src="{{ url_for('static', path='grade_icon.png') }}" /> Grade</a></li>
+    </div>
+    <div class="set_scheme">
+        <button id="set_scheme_btn" onclick="openPopUp()">Set Grade Scheme</button>
+        <p id="scheme_status"><b>The scheme is not set</b></p>
+    </div>
+    <div id="popUp" class="popUp">
+        <h2>Set Grade</h2>
+        <form class="gradeFrom" method="POST" action="/Teacher/Course/{{course_id}}/{{course_sec}}">
+            <label for="minA" class="gradeLabel">A min: </label>
+            <input type="text" id="minA" name="minA">&emsp;
+            <label for="maxA" class="gradeLabel">max: </label>
+            <input type="text" id="maxA" name="maxA" value="100"><br><br>
+            <label for="minBplus" class="gradeLabel">B+ min: </label>
+            <input type="text" id="minBplus" name="minBplus">&emsp;
+            <label for="maxBplus" class="gradeLabel">max: </label>
+            <input type="text" id="maxBplus" name="maxBplus"><br><br>
+            <label for="minB" class="gradeLabel">B min: </label>
+            <input type="text" id="minB" name="minB">&emsp;
+            <label for="maxB" class="gradeLabel">max: </label>
+            <input type="text" id="maxB" name="maxB"><br><br>
+            <label for="minCplus" class="gradeLabel">C+ min: </label>
+            <input type="text" id="minCplus" name="minCplus">&emsp;
+            <label for="maxCplus" class="gradeLabel">max: </label>
+            <input type="text" id="maxCplus" name="maxCplus"><br><br>
+            <label for="minC" class="gradeLabel">C min: </label>
+            <input type="text" id="minC" name="minC">&emsp;
+            <label for="maxC" class="gradeLabel">max: </label>
+            <input type="text" id="maxC" name="maxC"><br><br>
+            <label for="minDplus" class="gradeLabel">D+ min: </label>
+            <input type="text" id="minDplus" name="minDplus">&emsp;
+            <label for="maxDplus" class="gradeLabel">max: </label>
+            <input type="text" id="maxDplus" name="maxDplus"><br><br>
+            <label for="minD" class="gradeLabel">D min: </label>
+            <input type="text" id="minD" name="minD">&emsp;
+            <label for="maxD" class="gradeLabel">max: </label>
+            <input type="text" id="maxD" name="maxD"><br><br>
+            <label for="minD" class="gradeLabel">F min: </label>
+            <input type="text" id="minF" name="minF" value="0">&emsp;
+            <label for="maxF" class="gradeLabel">max: </label>
+            <input type="text" id="maxF" name="maxF"><br><br>
+            <div class="buttons">
+                <button type="submit" id="addBT" onclick="closePopUp()">Set</button>
+                <button type="button" id="cancelBT" onclick="closePopUp()">Cancel</button>
+            </div>
+        </form>
+    <div>
+    <script>
+        var showBtn = document.getElementById("course_info_title");
+        var moreText = document.getElementById("more");
+        var bt = document.getElementById("bt");
+        var popUp = document.getElementById("popUp");
+        var current_display = "none";
+
+        function openPopUp() {
+            popUp.classList.add("open_popup");
+        }
+    
+        function closePopUp() {
+            popUp.classList.remove("open_popup");
+        }
+        
+        function showDetail() {
+            if (current_display == "none") {
+                current_display = "inline";
+                moreText.style.display = current_display;
+                bt.innerHTML = "-";
+            } else {
+                current_display = "none";
+                moreText.style.display = current_display;
+                bt.innerHTML = "+";
+            }
+        }
+
+        function getGradeScheme(gradeScheme) {
+            var scheme_status = document.getElementById("scheme_status");
+            var minA = document.getElementById("minA");
+            var maxA = document.getElementById("maxA");
+            var minBplus = document.getElementById("minBplus");
+            var maxBplus = document.getElementById("maxBplus");
+            var minB = document.getElementById("minB");
+            var maxB = document.getElementById("maxB");
+            var minCplus = document.getElementById("minCplus");
+            var maxCplus = document.getElementById("maxCplus");
+            var minC = document.getElementById("minC");
+            var maxC = document.getElementById("maxC");
+            var minDplus = document.getElementById("minDplus");
+            var maxDplus = document.getElementById("maxDplus");
+            var minD = document.getElementById("minD");
+            var maxD = document.getElementById("maxD");
+            var minF = document.getElementById("minF");
+            var maxF = document.getElementById("maxF");
+            if (gradeScheme != {}) {
+                scheme_status.innerHTML = "<b>The scheme is set</b>";
+                minA.value = gradeScheme["A"][0];
+                maxA.value = gradeScheme["A"][1];
+                minBplus.value = gradeScheme["B+"][0];
+                maxBplus.value = gradeScheme["B+"][1];
+                minB.value = gradeScheme["B"][0];
+                maxB.value = gradeScheme["B"][1];
+                minCplus.value = gradeScheme["C+"][0];
+                maxCplus.value = gradeScheme["C+"][1];
+                minC.value = gradeScheme["C"][0];
+                maxC.value = gradeScheme["C"][1];
+                minDplus.value = gradeScheme["D+"][0];
+                maxDplus.value = gradeScheme["D+"][1];
+                minD.value = gradeScheme["D"][0];
+                maxD.value = gradeScheme["D"][1];
+                minF.value = gradeScheme["F"][0];
+                maxF.value = gradeScheme["F"][1];
+            }
+        }
+
+        getGradeScheme({{gradeScheme | tojson}});
+    </script>
+</div>
+{%endblock%}

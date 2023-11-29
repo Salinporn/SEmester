@@ -1,0 +1,94 @@
+{% extends "student_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/attendance_student.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="header">
+        <h1>Attendance</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody class="attendanceList" id="attendanceList"></tbody>
+    <table>
+    <div id="graphDiv">
+        <canvas id="myChart"></canvas>
+    </div>
+<div>
+<script>
+    function displayCourseAttendance(attendanceDict) {
+        let attendanceList = document.getElementById("attendanceList");
+        innerHTML = "";
+        for (var key in attendanceDict) {
+            attendance = attendanceDict[key];
+            innerHTML += "<tr><td class='date'>" + key + "</td>";
+            innerHTML += "<td class='status'>" + attendance['status'] + "</td>";
+            innerHTML += "<td class='remark'>" + attendance['remark'] + "</td>";
+            innerHTML += "</tr>";
+        }
+        attendanceList.innerHTML = innerHTML;
+    }
+
+    displayCourseAttendance({{attendanceDict|tojson}});
+
+    function totalAttendance(attendanceDict) {
+        let totalAt = [];
+        let totalPresent = 0;
+        let totalAbsent = 0;
+        let totalLate = 0;
+        for (var key in attendanceDict) {
+            attendance = attendanceDict[key];
+            if (attendance['status'] == "present") {
+                totalPresent += 1;
+            }
+            else if (attendance['status'] == "absent") {
+                totalAbsent += 1;
+            }
+            else if (attendance['status'] == "late") {
+                totalLate += 1;
+            }
+        }
+        totalAt.push(totalPresent);
+        totalAt.push(totalLate);
+        totalAt.push(totalAbsent);
+        return totalAt;
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+        labels: ['Present', 'Late', 'Absent'],
+        datasets: [{
+            label: "# of Student's Attendances",
+            data: totalAttendance({{attendanceDict|tojson}}),
+            borderWidth: 1
+        }]
+        },
+        options: {
+        scales: {
+            y: {
+            beginAtZero: true,
+            ticks: {
+                stepSize: 5
+            }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+        }
+    });
+</script>
+{%endblock%}

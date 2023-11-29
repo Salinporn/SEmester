@@ -1,0 +1,88 @@
+{% extends "teacher_header.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/grade_assignment_teacher.css') }}">
+{% endblock %}
+{% block content %}
+<div class="wholePage">
+    <div class="backBtn">
+        <button type="button" class="backBT" id="backBT" class="saveButton" onclick="window.location.href='/Teacher/Grade/{{course_id}}/{{course_sec}}'"><img src="{{ url_for('static', path='arrow_icon.png') }}"></button>    
+    </div>
+    <div class="header">
+        <h1 class="hd">Grade</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div>
+    <div class="detail">
+        <h2>{{topic}}</h2>
+        <label>Total Score: {{total_score}}</label>
+        <label>Weight: {{percentage}}%</label>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Names</th>
+                <th>Scores</th>
+            <tr>
+        </thead>
+        <tbody class="studentsList" id="studentsList"></tbody>
+    </table>
+    <div class="summary">
+        <h2>Summary</h2>
+        <label id="minLB">Min: </label>
+        <label id="min">{{min_score}}</label><br>
+        <label id="maxLB">Max: </label>
+        <label id="max">{{max_score}}</label><br>
+        <label id="meanLB">Mean: </label>
+        <label id="mean">{{mean_score}}</label><br>
+    </div>
+    <div id="graphDiv">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+<script>
+    function displayAssignmentScore(studentDict) {
+        var studentsList = document.getElementById("studentsList");
+        var innerHTML = "";
+        for (var key in studentDict) {
+            assignment = studentDict[key];
+            innerHTML += "<tr>";
+            innerHTML += "<td class='id'>" + key + "</td>";
+            innerHTML += "<td class='name'>" + assignment['name'] + "</td>";
+            innerHTML += "<td class='score'>" + assignment['score'] + "</td>";
+            innerHTML += "</tr>";
+        }
+        studentsList.innerHTML += innerHTML;
+    }
+    displayAssignmentScore({{studentDict|tojson}});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+        labels: {{score_label | tojson}},
+        datasets: [{
+            label: "Students score range",
+            data: {{score_range}},
+            borderWidth: 1
+        }]
+        },
+        options: {
+        scales: {
+            y: {
+            beginAtZero: true,
+            ticks: {
+                stepSize: 5
+            }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+        }
+    });
+</script>
+{% endblock %}

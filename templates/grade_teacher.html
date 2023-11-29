@@ -1,0 +1,156 @@
+{% extends "teacher_header.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/grade_teacher.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="wholePage">
+    <div class="header">
+        <h1>Grade</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div>
+    <div id="modeSelection" class="modeSelection">
+        <select id="modeSelect" class="modeSelect" name="mode">
+            <option value="by_assignment">By Assignment</option>
+            <option value="by_grade" selected>By Grade</option>
+        </select>
+    </div>
+    <div id="assignment_exam_list"></div>
+    <div id="edit_button"></div>
+    <div id="score_summary">
+        <p><b><u>Score Summary</u></b></p>
+        <p id="mean"><b>Mean:</b> </p>
+        <p id="sd"><b>Standard Deviation:</b> </p>
+        <p id="min"><b>Minimum:</b> </p>
+        <p id="max"><b>Maximum:</b> </p>
+    </div>
+    <div id="graphDiv">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+<script>
+    var edit_button = document.getElementById("edit_button");
+    var gradeList = document.getElementById("assignment_exam_list");
+    var modeSelect = document.getElementById("modeSelect");
+    var scoreSum = document.getElementById("score_summary");
+    var graphDiv = document.getElementById("graphDiv");
+
+    function displayAssignmentExam(assignmentDict) {
+        graphDiv.style.display = "none";
+        scoreSum.style.display = "none";
+        edit_button.innerHTML = "";
+        var assignmentList = document.getElementById("assignment_exam_list");
+        var innerHTML = "";
+        for (var key in assignmentDict) {
+            innerHTML += "<div class='assignmentLink'><a class='theLink' href='/Teacher/Grade/Assignment/" + {{course_id}} + "/" + {{course_sec}} + "/" + key + "'>" 
+            innerHTML += assignmentDict[key] + "</a></div>";
+        }
+        assignmentList.innerHTML = innerHTML;
+    }
+
+    function displayGrade(gradeDict) {
+        graphDiv.style.display = "block";
+        scoreSum.style.display = "block";
+        var testKey = Object.keys(gradeDict)[0];
+        if (gradeDict[testKey].grade == "") {
+            var innerHTML = "<form class='gradeForm' method='POST' action='/Teacher/Grade/{{course_id}}/{{course_sec}}'><table><thead><th>Student ID</th><th>Names</th><th>Total Score</th><th>Grades</th></thead><tbody>";
+        } else {
+            edit_button.innerHTML = "<button type='button' id='editBT' onclick='edit()'>Edit</button>";
+            var innerHTML = "<table><thead><th>Student ID</th><th>Names</th><th>Total Score</th><th>Grades</th></thead><tbody>";
+        }
+        for (var key in gradeDict) {
+            student = gradeDict[key];
+            if (student.grade == "") {
+                innerHTML += "<tr><td>" + key + "</td><td>" + student.name + "</td>";
+                innerHTML += "<td>" + student.score + "<td>";
+                innerHTML += `<td><input id=grade_input name=grade_${key}></td></tr>`;
+            } else {
+                innerHTML += "<tr><td>" + key + "</td><td>" + student.name + "</td>";
+                innerHTML += "<td>" + student.score + "</td>";
+                innerHTML += "<td>" + student.grade + "</td></tr>";
+            }
+        }
+        if (gradeDict[testKey].grade == "") {
+            innerHTML +="</tbody></table><button type='submit' id='save_button'>Save</button></form>";
+        } else {
+            innerHTML += "</tbody></table>";
+        }
+        gradeList.innerHTML = innerHTML;
+    }
+
+    function edit() {
+        editGrade({{gradeDict|tojson}});
+    }
+
+    function editGrade(gradeDict) {
+        edit_button.innerHTML = "";
+        var innerHTML = "<form class='gradeForm' method='POST' action='/Teacher/Grade/{{course_id}}/{{course_sec}}'><table><thead><th>Student ID</th><th>Names</th><th>Total Score</th><th>Grades</th></thead><tbody>";
+        for (var key in gradeDict) {
+            student = gradeDict[key];
+            innerHTML += "<tr><td>" + key + "</td><td>" + student.name + "</td>";
+            innerHTML += "<td>" + student.score + "</td>";
+            innerHTML += `<td><input id=grade_input name=grade_${key} value=${student.grade}></td></tr>`;
+        }
+        innerHTML +="</tbody></table><button type='submit' id='save_button'>Save</button></form>";
+        gradeList.innerHTML = innerHTML;
+    }
+
+    function toTwoPlace() {
+        let mean = {{mean}};
+        let std = {{std}};
+        let min = {{min}};
+        let max = {{max}};
+        mean = mean.toFixed(2);
+        std = std.toFixed(2);
+        min = min.toFixed(2);
+        max = max.toFixed(2);
+        document.getElementById("mean").innerHTML += mean;
+        document.getElementById("sd").innerHTML += std;
+        document.getElementById("min").innerHTML += min;
+        document.getElementById("max").innerHTML += max;
+    }
+
+    toTwoPlace();
+
+    displayGrade({{gradeDict|tojson}});
+
+    modeSelect.addEventListener("change", function() {
+        if (modeSelect.value == "by_assignment") {
+            displayAssignmentExam({{assignmentDict|tojson}});
+        } else if (modeSelect.value == "by_grade") {
+            displayGrade({{gradeDict|tojson}});
+        }
+    });
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+        labels: ['0-50', '50-60', '60-70', '70-80', '80-90', '90-100'],
+        datasets: [{
+            label: "Students score range",
+            data: {{score_range}},
+            borderWidth: 1
+        }]
+        },
+        options: {
+        scales: {
+            y: {
+            beginAtZero: true,
+            ticks: {
+                stepSize: 5
+            }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+        }
+    });
+</script>
+{% endblock %}

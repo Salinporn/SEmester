@@ -1,0 +1,46 @@
+{% extends "student_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/assignment_submission.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="backBtn">
+        <button type="button" class="backBT" id="backBT" class="saveButton" onclick="window.location.href='/Student/Assignment/{{course_id}}/{{course_sec}}'"><img src="{{ url_for('static', path='arrow_icon.png') }}"></button>    
+    </div>
+    <div class="header">
+        <h1>Assignment</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div><br>
+    <div id="assignmentDetail">
+        <h2>{{assignment_name}} </h2>
+        <p id="total_score">Score: {{assignment_score}}</p>
+        <p id="due_date">Due Date: {{due_date}} {{due_time}}</p><br>
+        <p id="description"> {{description}}</p>
+        <div id="attachment"></div>
+        <form class="assignment_submission" method="POST" action="/Student/Assignment/{{course_id}}/{{course_sec}}/{{assignment_code}}" enctype="multipart/form-data">
+            <input type="file" id="myFile" name="files" multiple="multiple"><br>
+            <button type="button" id="cancel_submission" onclick="window.location.href='/Student/Assignment/{{course_id}}/{{course_sec}}'">Cancel</button>
+            <button type="submit" id="submit_assignment">Submit</button>
+        </form>
+    </div>
+</div>
+<script>
+
+    function files(file) {
+        var attachment = document.getElementById("attachment");
+        var innerHTML = "";
+        var filenames = file.filename;
+        if (filenames != []) {
+            for (var i = 0; i < filenames.length; ++i) {
+                innerHTML += "<p><img src='{{url_for('static',path='clip_icon.png')}}' class='clip_icon'/><a href='/static/assignment/uploaded/" + {{course_id}} +"/" + {{course_sec}} + "/" + filenames[i] + "' download>" + filenames[i] + "</a></p>"
+            }
+            attachment.innerHTML = innerHTML;
+        }
+    }
+
+    files({{filenames | tojson}});
+
+</script>
+{%endblock%}

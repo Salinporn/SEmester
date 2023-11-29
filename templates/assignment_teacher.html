@@ -1,0 +1,104 @@
+{% extends "teacher_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/assignment_teacher.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="header">
+        <h1>Assignment</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div>
+    <div class="classBtn">
+        <button type="button" class="btn" onclick="openPopUp()">Assign</button>
+    </div>
+    <div class="assignmentList" id="assignmentList"></div>
+    <div id="popUp" class="popUp">
+        <h2 class="popUpheader">Add Assignment</h2>
+        <form class="assignmentForm" method="POST" action="/Teacher/Assignment/{{course_id}}/{{course_sec}}" enctype="multipart/form-data">
+            <label for="topic" class="topicLB">Topic: </label>
+            <input type="text" id="topic" name="topic"><br><br>
+            <label for="description">Description: </label><br>
+            <textarea id="description" name="content" rows="4" cols="50"></textarea><br><br>
+            <input type="file" id="myFile" name="files" multiple="multiple"><br><br>
+            <label for="due_date" class="due_dateLB">Due Date: </label>
+            <input type="date" id="due_date" name="due_date"><br><br>
+            <label for="due_time" class="due_timeLB">Due Time: </label>
+            <input type="time" id="due_time" name="due_time"><br><br>
+            <label for="score" class="scoreLB">Score: </label>
+            <input type="number" id="score" name="score"><br><br>
+            <label for="weight" class="weightLB">Weight(out of 100%): </label>
+            <input type="number" id="weight" name="weight"><br><br>
+            <div class="buttons">
+                <button type="submit" id="addBT" onclick="closePopUp()">Post</button>
+                <button type="button" id="cancelBT" onclick="closePopUp()">Cancel</button>
+            </div>
+        </form>
+    <div>
+<div>
+<script>
+    let popUp = document.getElementById("popUp");
+
+    function openPopUp() {
+        popUp.classList.add("open_popup");
+    }
+
+    function closePopUp() {
+        popUp.classList.remove("open_popup");
+    }
+    
+    function displayassignment(assignmentDict) {
+        let assignmentList = document.getElementById("assignmentList");
+        let innerHTML = "";
+        for (var key in assignmentDict) {
+            var assignment = assignmentDict[key];
+            innerHTML += "<div class='assignment'><button id='showBT' class='showBT'>" + assignment.topic + " (Due Date: " + assignment.due_date + " " + assignment.due_time + " Score: " + assignment.score + ")<p class='showmore_less'>+</p></button><span class='more'>" + assignment.content + "<br><br>";
+            if (assignment.file != []) {
+                for (var i = 0; i < assignment.filename.length; i++) {
+                    innerHTML += "<img src='{{url_for('static',path='clip_icon.png')}}' class='clip_icon'/><a class='upload' href='/static/assignment/uploaded/" + {{course_id}} +"/" + {{course_sec}} + "/" + assignment.filename[i] + "' download>" + assignment.filename[i] + "</a><br>";
+                }
+            }
+            innerHTML += `<button class="deleteBT" onclick="deleteassignment('${key}')">Delete</button><button class="checkBT" onclick="checkRedirect('${key}')">Check</button></span></div>`;
+        }
+        assignmentList.innerHTML = innerHTML;
+    }
+
+    displayassignment({{assignmentDict|tojson}});
+
+    var coll = document.getElementsByClassName("showBT");
+    
+    for (var i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        var more_less = this.querySelector(".showmore_less");
+        if (content.style.display == "none") {
+            content.style.display = "block";
+            more_less.innerHTML = "-";
+        } else {
+            content.style.display = "none";
+            more_less.innerHTML = "+";
+        }
+        });
+    }
+
+    function deleteassignment(topic) {
+        fetch('/api/delete-assignment/{{course_id}}/{{course_sec}}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ topic: topic }),
+        })
+        .then(response => {
+            location.reload();
+        });
+
+    }
+
+    function checkRedirect(key) {
+        window.location.href = "/Teacher/Assignment/{{course_id}}/{{course_sec}}/" + key;
+    }
+</script>
+{%endblock%}
