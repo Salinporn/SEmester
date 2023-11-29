@@ -1,0 +1,104 @@
+body {
+    margin: auto;
+    background-color: #fff5e5;
+    max-width: 1920px;
+    height: 100vh;
+}
+h1 {
+    text-align: center;
+    font-family: Arial;
+}
+p, .reg, .button {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+.next, .back {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+}
+
+.regLink {
+    color: blue;
+}
+
+.information {
+    margin: 0 auto;
+    width: 50%;
+    text-align: left;
+    font-family: Arial;
+    font-size: 18px;
+}
+
+.checkboxes {
+    width: 60%;
+    text-align: left;
+    font-family: Arial;
+    font-size: 14px;
+    padding-top: 5px;
+}
+
+.pwd {
+    margin: 0 auto;
+    text-align: left;
+    font-family: Arial;
+    font-size: 14px;
+}
+
+.txt_input {
+    padding: 3px;
+    border-radius: 5px;
+    border: solid 1px black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    width: 100%;
+}
+
+.student, .teacher {
+    margin: 0 auto;
+    text-align: center;
+    font-size: 18px;
+    padding: 15px 120px 15px 120px;
+    border-radius: 5px;
+    border: solid 1px black;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: white;
+}
+
+button {
+    padding: 10px;
+    border-radius: 5px;
+    border: solid 1px black;
+    outline: none;
+    background-color: #ff914d;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+button:hover {
+    background-color: #f7a873;
+}
+
+.regInfo {
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0 auto;
+    text-align: center;
+    font-family: Arial;
+    padding-top: 50px;
+    width: 50%;
+    padding-top: 50px;
+}
+
+.roleInfo {
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0 auto;
+    text-align: center;
+    font-family: Arial;
+    padding-top: 50px;
+    width: 50%;
+    padding-top: 170px;
+}

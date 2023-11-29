@@ -1,0 +1,118 @@
+#courses:hover {
+    background-color: #ffa56d;
+}
+
+#grades:hover {
+    background-color: #ffa56d;
+}
+
+.wholePage {
+    background-color: #fff5e5;
+    max-width: 1920px;
+    height: 100%;
+    min-height: 80vh;
+    padding-bottom: 1%;
+    font-family: Arial;
+}
+
+table {
+    width: 98%;
+    margin: 1%;
+    text-align: center;
+}
+
+td, tr, table, th {
+    border: solid 2px black;
+    border-collapse: collapse;
+    padding: 5px;
+    font-size: 16px;
+    text-align: center;
+}
+
+td {
+    background-color: white;
+}
+
+th {
+    background-color: #FF914D;
+}
+
+thead, tbody {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
+
+.header {
+    font-family: Arial;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.modeSelect {
+    margin: 0 auto;
+}
+
+.by_assignment, .by_grade {
+    text-align: center;
+}
+
+.assignmentLink {
+    margin: 15px auto;
+    padding: 10px;
+    border-radius: 5px;
+    border: solid 1px black;
+    text-align: left;
+    background-color: white;
+    font-family: Arial;
+    font-size: 18px;
+    padding-top: 18px;
+    display: flex; 
+    justify-content: space-between; 
+    max-width: 90%;
+}
+
+.assignmentLink:hover {
+    text-decoration: underline;
+}
+
+input {
+    text-align: center;
+}
+
+#editBT, #save_button {
+    margin: 1%;
+    padding: 5px 20px;
+    cursor: pointer;
+    background-color: #ff914d;
+    border-radius: 5px;
+    border: solid 1px black;
+    outline: none;
+    font-size: 16px;
+    text-align: center;
+}
+
+#editBT:hover, #save_button:hover {
+    background-color: #fb761e;
+}
+
+#modeSelection {
+    margin: 1%;
+}
+
+#score_summary {
+    margin: 1%;
+    display: block;
+}
+
+
+#graphDiv {
+    width: 94%;
+    margin: 1%;
+    padding: 2%;
+    font-size: 18px;
+    height: 80vh;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    display: block;
+}

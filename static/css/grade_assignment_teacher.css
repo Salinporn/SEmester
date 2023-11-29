@@ -1,0 +1,90 @@
+#courses:hover {
+    background-color: #ffa56d;
+}
+
+#grades:hover {
+    background-color: #ffa56d;
+}
+
+.wholePage {
+    background-color: #fff5e5;
+    max-width: 1920px;
+    height: 100%;
+    min-height: 80vh;
+    padding-bottom: 1%;
+}
+
+thead, tbody {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
+
+.header {
+    font-family: Arial;
+    padding-top: 20px;
+    text-align: center;
+}
+
+
+td, tr, table, th {
+    border: solid 2px black;
+    border-collapse: collapse;
+    padding: 5px;
+    font-size: 16px;
+    text-align: center;
+}
+
+td {
+    background-color: white;
+}
+
+th {
+    background-color: #FF914D;
+}
+
+table {
+    width: 95%;
+    margin: 20px auto;
+    border: solid 1px black;
+}
+
+.summary {
+    width: 95%;
+    margin: auto;
+    padding: 0 20px 20px 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+}
+
+.detail {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    width: 95%;
+    margin: auto;
+}
+
+.backBT {
+    width: 4%;
+    float: left;
+    margin-top: 20px;
+    margin-left: 20px;
+    border-radius: 50%;
+    background-color: #ff914d;
+    padding-top: 0.3%;
+}
+
+.backBT:hover {
+    background-color: #fb761e;
+}
+
+#graphDiv {
+    width: 94%;
+    margin: 1%;
+    padding: 2%;
+    font-size: 18px;
+    height: 80vh;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    display: block;
+}

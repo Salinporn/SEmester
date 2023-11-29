@@ -1,0 +1,53 @@
+#profile_container {
+    font-family: Arial;
+    background-color: #fff5e5;
+    height: 100vh;
+    margin-top: 0%;
+}
+
+h1 {
+    margin: 0;
+    padding-top: 20px;
+    text-align: center;
+}
+
+p {
+    padding-left: 20%;
+    font-size: 20px;
+}
+
+#logoutBT {
+    padding-left: 20%;
+    font-size: 20px;
+}
+
+.logout {
+    width: 10%;
+    background-color: #ff914d;
+    color: black;
+    padding: 10px;
+    border: solid black 1px;
+}
+
+.logout a {
+    text-decoration: none;
+    color: black;
+    font-size: 20px;
+    font-family: Arial;
+}
+
+button:hover {
+    background-color: #f7a873;
+}
+
+#courses:hover {
+    background-color: #ffa56d;
+}
+
+#grades:hover {
+    background-color: #ffa56d;
+}
+
+#attendance:hover {
+    background-color: #ffa56d;
+}

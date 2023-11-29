@@ -1,0 +1,150 @@
+#courses:hover {
+    background-color: #ffa56d;
+}
+
+#grades:hover {
+    background-color: #ffa56d;
+}
+
+.wholePage {
+    background-color: #fff5e5;
+    max-width: 1920px;
+    height: 100%;
+    min-height: 80vh;
+}
+
+.header {
+    background-color: #fff5e5;
+    font-family: Arial;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.buttons {
+    padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+}
+
+.classBtn {
+    width: 99%;
+    text-align: right;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #ff914d;
+    border-radius: 5px;
+    border: solid 1px black;
+    outline: none;
+    font-family: Arial;
+    font-size: 14px;
+}
+
+.popUp {
+    width: 400px;
+    background-color: #ffbb91;
+    border-radius: 6px;
+    position: fixed;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.1);
+    text-align: left;
+    padding: 10px 30px 30px 30px;
+    font-family: Arial;
+    font-size: 14px;
+    border: 1px solid black;
+    visibility: hidden;
+    transition: transform 0.4s, top 0.4s;
+}
+
+input {
+    width: 100%;
+    padding: 3px;
+    border-radius: 5px;
+    border: solid 1px black;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.open_popup {
+    visibility: visible;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+h2 {
+    text-align: center;
+    font-size: 26px;
+}
+
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #ff914d;
+    border-radius: 5px;
+    border: solid 1px black;
+    outline: none;
+    font-family: Arial;
+    font-size: 14px;
+    text-align: center;
+}
+
+button:hover {
+    background-color: #fb761e;
+}
+
+h1 {
+    margin: 0;
+}
+
+.date {
+    margin: 10px auto;
+    padding: 10px;
+    border-radius: 5px;
+    border: solid 1px black;
+    text-align: left;
+    background-color: white;
+    font-family: Arial;
+    font-size: 18px;
+    padding-top: 18px;
+    display: flex; 
+    justify-content: space-between; 
+    max-width: 90%;
+}
+
+.dateInfo {
+    width: 70%; 
+    margin: auto;
+}
+
+.removeBtn {
+    width: 30%;
+    text-align: right;
+}
+
+#Link:hover, .dateInfo:hover {
+    text-decoration: underline;
+}
+
+#removeBT button{
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #ff914d;
+    border-radius: 5px;
+    border: solid 1px black;
+    outline: none;
+    font-family: Arial;
+    font-size: 14px;
+    text-align: center;
+}
+
+#removeBT:hover {
+    background-color: #fb761e;
+}

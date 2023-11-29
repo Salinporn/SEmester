@@ -1,0 +1,168 @@
+#courses {
+    background-color: #ffbb91;
+}
+
+#grades:hover {
+    background-color: #ffa56d;
+}
+
+#attendance:hover {
+    background-color: #ffa56d;
+}
+
+.wholePage {
+    background-color: #fff5e5;
+    max-width: 1920px;
+    height: 100%;
+    min-height: 65vh;
+    font-family: Arial;
+}
+
+#bttn {
+    width: 96.5%;
+    text-align: right;
+    padding-top: 50px;
+}
+
+input {
+    width: 100%;
+    padding: 3px;
+    border-radius: 5px;
+    border: solid 1px black;
+}
+
+#joinButton {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #ff914d;
+    border-radius: 5px;
+    border: solid 1px black;
+    outline: none;
+    font-size: 14px;
+}
+
+.popup {
+    width: 300px;
+    background-color: #ffbb91;
+    border-radius: 6px;
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.1);
+    text-align: center;
+    padding: 30px 30px 30px;
+    font-size: 14px;
+    border: 1px solid black;
+    visibility: hidden;
+    transition: transform 0.4s, top 0.4s;
+}
+
+.open_popup {
+    visibility: visible;
+    top: 50vh;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+#submitBT, #cancelBT {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #ff914d;
+    border-radius: 5px;
+    border: solid 1px black;
+    outline: none;
+    font-size: 14px;
+}
+
+button:hover {
+    background-color: #fb761e;
+}
+
+.courseBox {
+    border: solid 1px black;
+    text-align: left;
+    width: 90%;
+    height: 150px;
+    padding: 20px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 20px;
+    background-color: white;
+    display: block;
+}
+
+.courseName h1 {
+    font-size: 32px;
+    color: black;
+    margin: 0;
+    padding-top: 10px;
+}
+
+.courseID {
+    font-size: 16px;
+    margin: 0;
+    padding-bottom: 40px;
+}
+
+.links {
+    text-align: right;
+}
+
+.attendanceLink, .gradeLink, .assignmentLink, .announcementLink {
+    font-size: 16px;
+    padding-left: 10px;
+    text-decoration: none;
+}
+
+.courseName:hover, .gradeLink:hover, .assignmentLink:hover, .announcementLink:hover {
+    text-decoration: underline;
+}
+
+.unenrollBT {
+    float: right;
+    margin: 0;
+    padding-bottom: 1%;
+}
+
+.remove_button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #ff914d;
+    border-radius: 5px;
+    border: solid 1px black;
+    outline: none;
+    font-size: 14px;
+}
+
+.bottomBanner {
+    display: flex;
+    justify-content: space-between;
+    background-color: #FF914D; ;
+    margin-top: 40px;
+    padding: 20px 0;
+    justify-content: flex-start;
+}
+
+.info {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.bannerHD {
+    font-size: 18px;
+    text-align: center;
+}
+
+.aboutUsBanner,
+.contactBanner {
+    flex: 1;
+    padding: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+.contactBanner {
+    border-left: solid 1px black;
+}

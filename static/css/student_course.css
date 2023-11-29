@@ -1,0 +1,93 @@
+#courses:hover {
+    background-color: #ffa56d;
+}
+
+#grades:hover {
+    background-color: #ffa56d;
+}
+
+#attendance:hover {
+    background-color: #ffa56d;
+}
+
+.whole_page {
+    padding: 2%;
+    font-family: Arial;
+    background-color: #fff5e5;
+    height: 100%;
+    min-height: 57vh;
+}
+
+.title {
+    margin: 0;
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 26px;
+    background-color: white;
+}
+
+.course_info {
+    padding-left: 1px;
+    padding-right: 1px;
+    margin-top: 2%;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: white;
+}
+
+#course_info_title {
+    margin: 0;
+    padding: 1%;
+    font-size: 20px;
+    width: 100%;
+    text-align: left;
+    border: 0px;
+    background-color: white;
+}
+
+#course_info_title p {
+    font-size: 22px;
+    margin: 0;
+    display: inline;
+    float: right;
+}
+#course_info_title:hover {
+    background-color: #e6e6e6;
+}
+
+hr {
+    margin: 0;
+    margin-left: 2%;
+    margin-right: 1%;
+    color: black;
+}
+
+#more {
+    display: none;
+}
+
+#announcement_icon, #attendance_icon, #assignment_icon, #grade_icon {
+    width: 1%;
+}
+
+.links {
+    padding-left: 1%;
+    padding-right: 1%;
+    margin-top: 2%;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 18px;
+    background-color: white;
+}
+
+#announcement:hover, #attendance_overview:hover, #assignment:hover, #grade:hover {
+    text-decoration: underline;
+}
+
+.info {
+    margin-left: 1%;
+    font-size: 16px;
+}

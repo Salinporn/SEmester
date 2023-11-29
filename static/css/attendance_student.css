@@ -1,0 +1,67 @@
+#courses:hover {
+    background-color: #ffa56d;
+}
+
+#grades:hover {
+    background-color: #ffa56d;
+}
+
+#attendance:hover {
+    background-color: #ffa56d;
+}
+
+#attendance {
+    background-color: #FF914D;
+}
+
+.wholePage {
+    background-color: #fff5e5;
+    max-width: 1920px;
+    height: 100%;
+    min-height: 80vh;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
+
+.header {
+    font-family: Arial;
+    padding-top: 20px;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+td, tr, table, th {
+    border: solid 2px black;
+    border-collapse: collapse;
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+}
+
+td {
+    background-color: white;
+}
+
+th {
+    background-color: #FF914D;
+}
+
+table {
+    width: 96%;
+    padding: 1%;
+    margin: 0 auto;
+}
+
+#graphDiv {
+    width: 94%;
+    margin: 1%;
+    padding: 2%;
+    font-size: 18px;
+    height: 80vh;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+}

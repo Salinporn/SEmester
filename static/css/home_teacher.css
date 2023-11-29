@@ -1,0 +1,175 @@
+#courses {
+    background-color: #ffbb91;
+}
+
+#grades:hover {
+    background-color: #ffa56d;
+}
+
+.wholePage {
+    background-color: #fff5e5;
+    max-width: 1920px;
+    height: 100%;
+    min-height: 80vh;
+}
+
+button {
+    padding: 10px;
+    border-radius: 5px;
+    border: solid 1px black;
+    outline: none;
+    background-color: #ff914d;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.classBtn {
+    width: 95%;
+    text-align: right;
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #ff914d;
+    border-radius: 5px;
+    border: solid 1px black;
+    outline: none;
+    font-family: Arial;
+    font-size: 14px;
+}
+
+.popUp {
+    width: 400px;
+    background-color: #ffbb91;
+    border-radius: 6px;
+    position: fixed;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.1);
+    text-align: left;
+    padding: 10px 30px 30px 30px;
+    font-family: Arial;
+    font-size: 14px;
+    border: 1px solid black;
+    visibility: hidden;
+    transition: transform 0.4s, top 0.4s;
+}
+
+input {
+    width: 100%;
+    padding: 3px;
+    border-radius: 5px;
+    border: solid 1px black;
+}
+
+.open_popup {
+    visibility: visible;
+    top: 50vh;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.popUpHeader {
+    font-size: 26px;
+    text-align: center;
+}
+
+.buttons {
+    text-align: center;
+}
+
+.buttons button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #ff914d;
+    border-radius: 5px;
+    border: solid 1px black;
+    outline: none;
+    font-family: Arial;
+    font-size: 14px;
+    text-align: center;
+}
+
+button:hover {
+    background-color: #fb761e;
+}
+
+.courseBox {
+    border: solid 1px black;
+    text-align: left;
+    width: 90%;
+    height: 150px;
+    padding: 20px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 20px;
+    background-color: white;
+}
+
+.courseName h1 {
+    font-family: Arial;
+    font-size: 32px;
+    color: black;
+    margin: 0;
+    padding-top: 10px;
+}
+
+.courseID {
+    font-family: Arial;
+    font-size: 16px;
+    margin: 0;
+    padding-bottom: 40px;
+}
+
+.links {
+    text-align: right;
+}
+
+.attendanceLink, .gradeLink, .assignmentLink, .announcementLink {
+    font-family: Arial; 
+    font-size: 16px;
+    padding-left: 10px;
+    text-decoration: none;
+}
+
+.courseName:hover, .attendanceLink:hover, .gradeLink:hover, .assignmentLink:hover, .announcementLink:hover {
+    text-decoration: underline;
+}
+
+.bottomBanner {
+    display: flex;
+    justify-content: space-between;
+    background-color: #FF914D; ;
+    margin-top: 40px;
+    padding: 20px 0;
+    justify-content: flex-start;
+}
+
+.infoBanner {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: left;
+}
+
+.bannerHD {
+    font-size: 18px;
+    text-align: center;
+}
+
+.aboutUsBanner,
+.contactBanner {
+    flex: 1;
+    padding: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    text-align: left;
+}
+
+.contactBanner {
+    border-left: solid 1px black;
+}

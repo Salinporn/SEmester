@@ -1,0 +1,131 @@
+#courses:hover {
+    background-color: #ffa56d;
+}
+
+#grades:hover {
+    background-color: #ffa56d;
+}
+
+#attendance:hover {
+    background-color: #ffa56d;
+}
+
+.wholePage {
+    background-color: #fff5e5;
+    max-width: 1920px;
+    height: 100%;
+    min-height: 80vh;
+    font-family: Arial;
+}
+
+button:hover {
+    background-color: #fb761e;
+}
+
+.header {
+    padding-top: 20px;
+    text-align: center;
+
+}
+
+
+h1 {
+    margin: 0;
+}
+
+#assignmentDetail {
+    width: 96%;
+    border-radius: 5px;
+    border: 1px solid black;
+    background-color: white;
+    margin: 1%;
+    padding: 1%;
+    display: block;
+}
+
+h2 {
+    margin: 0;
+    float: left;
+}
+
+#total_score {
+    margin: 0;
+    margin-top: 0.5%;
+    margin-left: 1%;
+    float: left;
+    font-size: 16px;
+    display: inline;
+}
+
+#due_date {
+    margin: 0;
+    margin-top: 0.5%;
+    margin-left: 1%;
+    float: right;
+    font-size: 16px;
+    display: inline;
+}
+
+#description {
+    font-size: 16px;
+}
+
+#assignmentDetail #description {
+    overflow: hidden;
+    white-space: pre-line;
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+#assignmentDetail #description.active {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+#attachment {
+    color: blue;
+    font-size: 16px;
+}
+
+#attachment:hover {
+    text-decoration: underline;
+}
+
+.clip_icon {
+    width: 1%;
+}
+
+button {
+    background-color: #ffa56d;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 0.5%;
+    font-size: 16px;
+}
+
+#myFile {
+    width: 98%;
+    background-color: #fff5e5;
+    border-radius: 5px;
+    border: 1px solid black;
+    padding-left: 1%;
+    padding-right: 1%;
+    padding-top: 0.5%;
+    padding-bottom: 0.5%;
+    margin-bottom: 1%;
+    font-size: 16px;
+}
+
+.backBT {
+    width: 4%;
+    float: left;
+    margin-top: 20px;
+    margin-left: 20px;
+    border-radius: 50%;
+    background-color: #ff914d;
+    padding-top: 0.3%;
+}
+
+.backBT:hover {
+    background-color: #fb761e;
+}

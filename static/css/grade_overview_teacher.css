@@ -1,0 +1,57 @@
+#courses:hover {
+    background-color: #ffa56d;
+}
+
+#grades {
+    background-color: #ffbb91;
+}
+
+.wholePage {
+    background-color: #fff5e5;
+    max-width: 1920px;
+    height: 100%;
+    min-height: 65vh;
+    font-family: Arial;
+}
+
+.header {
+    padding-top: 20px;
+    text-align: center;
+
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
+
+td, tr, table, th {
+    border: solid 2px black;
+    border-collapse: collapse;
+    padding: 5px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.course_name {
+    width: 40%;
+}
+
+td {
+    background-color: white;
+    width: 14%;
+}
+
+th {
+    background-color: #FF914D;
+}
+
+table {
+    width: 96%;
+    padding: 1%;
+    margin: 0 auto;
+}
+
+.courseGradeLink:hover {
+    text-decoration: underline;
+}
