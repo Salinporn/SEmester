@@ -1,4 +1,4 @@
-# Semester
+# SEmester
 
 SEmester is a group project undertaken as part of our university's Web Programming course. This group project leverages HTML, FastAPI, PyScript, JavaScript, and ZODB to create a seamless digital ecosystem that enhances the learning experience for both students and teachers.
 
