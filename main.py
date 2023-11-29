@@ -12,8 +12,6 @@ import random
 import string
 from datetime import datetime, timedelta
 import os
-import math
-
 
 class NotAuthenticatedException(Exception):
     pass
@@ -32,6 +30,8 @@ storage = ZODB.FileStorage.FileStorage('data/userData.fs')
 db = ZODB.DB(storage)
 connection = db.open()
 root = connection.root
+
+#create root if it does not exist
 if not hasattr(root, "students"):
     root.students = BTrees.OOBTree.BTree()
 if not hasattr(root, "teachers"):
@@ -51,6 +51,8 @@ if not hasattr(root, "attendances"):
 if not hasattr(root, "studentAttendances"):
     root.studentAttendances = BTrees.OOBTree.BTree()
   
+  
+#load user
 @manager.user_loader()
 def load_user(email: str):
     user = None
@@ -65,17 +67,20 @@ def load_user(email: str):
 
     return user
 
+#check if the user is login
 @app.exception_handler(NotAuthenticatedException)
 def auth_exception_handler(request: Request, exc: NotAuthenticatedException):
     return RedirectResponse(url='/login')
 
+#redirect to the correct home page (teacher or student)
 @app.get("/", response_class=HTMLResponse)
 async def redirect(request: Request, user_info=Depends(manager)):
     if isinstance(user_info, Student):
         return RedirectResponse(url="/home_student", status_code=302)
     elif isinstance(user_info, Teacher):
         return RedirectResponse(url="/home_teacher", status_code=302)
-
+ 
+#login
 @app.get("/login", response_class=HTMLResponse)
 async def login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
@@ -112,6 +117,7 @@ async def login_info(form_data: OAuth2PasswordRequestForm = Depends()):
     manager.set_cookie(response, access_token)
     return response
 
+#student home page
 @app.get("/home_student", response_class=HTMLResponse)
 async def student_home(request: Request, user=Depends(manager)):
     courses = {}
@@ -149,6 +155,7 @@ async def student_home_course(user=Depends(manager), course_code: str = Form(Non
         transaction.commit()
         return RedirectResponse(url="/home_student",status_code=302)
     
+#unenroll the student user from a course
 @app.post("/api/unenroll_home_student")
 async def unenrolled_home_student(request: dict, user=Depends(manager)):
     course_id = request.get('courseID')
@@ -162,7 +169,8 @@ async def unenrolled_home_student(request: dict, user=Depends(manager)):
         if root.studentCourses[s].getId() == int(course_id) and root.studentCourses[s].getSection() == int(course_sec):
             del root.studentCourses[s]
     transaction.commit()
-    
+   
+#teacher home page 
 @app.get("/home_teacher", response_class=HTMLResponse)
 async def teacher_home(request: Request, user=Depends(manager)):
     courses = {}
@@ -212,11 +220,13 @@ async def teacher_home_course(user=Depends(manager), course_name: str = Form(Non
         user.addTeaches(root.teacherCourses[code])
         transaction.commit()
         return RedirectResponse(url="/home_teacher",status_code=302)
-    
+   
+# page to choose whether to register as a student or teacher 
 @app.get("/register", response_class=HTMLResponse)
 async def register(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
+#student register page
 @app.get("/reg_student", response_class=HTMLResponse)
 async def reg_student(request: Request):
     return templates.TemplateResponse("reg_student.html", {"request": request})
@@ -277,7 +287,8 @@ async def student_info(id: str = Form(None), first_name: str = Form(None), last_
             root.students[int(id)] = Student(first_name, last_name, int(id), email, password)
             transaction.commit()
             return RedirectResponse(url="/login",status_code=302)
-        
+ 
+#teacher register page       
 @app.get("/reg_teacher", response_class=HTMLResponse)
 async def reg_teacher(request: Request):
     return templates.TemplateResponse("reg_teacher.html", {"request": request})
@@ -330,6 +341,7 @@ async def teacher_info(first_name: str = Form(None), last_name: str = Form(None)
             transaction.commit()
             return RedirectResponse(url="/login",status_code=302)
 
+#course details
 @app.get("/Teacher/Course/{course_id}/{course_sec}", response_class=HTMLResponse)
 async def teacher_course(request: Request, course_id: str = None, course_sec: str = None, user=Depends(manager)):
     course = user.getCourse(int(course_id), int(course_sec))
@@ -362,6 +374,7 @@ async def student_course(request: Request, course_id: str = None, course_sec: st
     course = user.getCoursefromid(int(course_id), int(course_sec))
     return templates.TemplateResponse("student_course.html", {"request": request, "email": user.getEmail(),"course_name": course.getName(), "course_id": course_id, "course_sec": course_sec, "course_code": course.getCode(), "course_credit": course.getCredit(), "course_teacher": course.getTeacher()})
 
+#announcement page for students to check announcement
 @app.get("/Student/Announcement/{course_id}/{course_sec}", response_class=HTMLResponse)
 async def student_announcement(request: Request, course_id: str = None, course_sec: str = None, user=Depends(manager)):
     course = user.getCoursefromid(int(course_id), int(course_sec))
@@ -374,6 +387,7 @@ async def student_announcement(request: Request, course_id: str = None, course_s
         announcements[a.getTopic()] = announcement
     return templates.TemplateResponse("annoucement_student.html", {"request": request, "email": user.getEmail(), "course_id": course_id, "course_sec": course_sec, "announcement": announcements, "course_name": course.getName()})
 
+# page for teacher to make announcement
 @app.get("/Teacher/Announcement/{course_id}/{course_sec}", response_class=HTMLResponse)
 async def teacher_announcement(request: Request, course_id: str = None, course_sec: str = None, user=Depends(manager)):
     course = user.getCourse(int(course_id), int(course_sec))
@@ -423,6 +437,7 @@ async def teacher_announcement_info(user=Depends(manager), course_id: str = None
     redirect = "/Teacher/Announcement/" + course_id + "/" + course_sec
     return RedirectResponse(url=redirect,status_code=302)
 
+#delete announcement
 @app.post("/api/delete-announcement/{course_id}/{course_sec}")
 async def delete_announcement(request: dict, user=Depends(manager), course_id: str = None, course_sec: str = None):
     course = user.getCourse(int(course_id), int(course_sec))
@@ -439,6 +454,7 @@ async def delete_announcement(request: dict, user=Depends(manager), course_id: s
             del root.announcements[topic_to_delete]
             transaction.commit()
 
+#list of dates of class for teacher to check attendance
 @app.get("/Teacher/Attendance/{course_id}/{course_sec}", response_class=HTMLResponse)
 async def teacher_attendace_dates(request: Request, course_id: str = None, course_sec: str = None, user=Depends(manager)):
     course = user.getCourse(int(course_id), int(course_sec))
@@ -469,6 +485,7 @@ async def teacher_attendance_dates_info(teacher=Depends(manager), course_id: str
     redirect = f"/Teacher/Attendance/{course_id}/{course_sec}"
     return RedirectResponse(url=redirect, status_code=302)
 
+#delete attendance datte
 @app.post("/api/delete-attendanceDate/{course_id}/{course_sec}")
 async def delete_attendanceDate(request: dict, user=Depends(manager), course_id: str = None, course_sec: str = None):
     course = user.getCourse(int(course_id), int(course_sec))
@@ -482,6 +499,7 @@ async def delete_attendanceDate(request: dict, user=Depends(manager), course_id:
             del root.attendances[date_to_delete]
             transaction.commit()
 
+#page for teacher to check attendance
 @app.get("/Teacher/Attendance/{course_id}/{course_sec}/{date}", response_class=HTMLResponse)
 async def teacher_attendance(request: Request, course_id: str = None, course_sec: str = None, user=Depends(manager), date: str = None):
     course = user.getCourse(int(course_id), int(course_sec))
@@ -526,6 +544,7 @@ async def teacher_attendance_info(request: Request, user=Depends(manager), cours
     transaction.commit()
     return RedirectResponse(url="/Teacher/Attendance/" + course_id + "/" + course_sec + "/" + date, status_code=302)
 
+#attendance overview page for student
 @app.get("/attendance-overview/", response_class=HTMLResponse)
 async def student_attendance_overview(request: Request, user=Depends(manager)):
     courses = {}
@@ -562,6 +581,7 @@ async def student_attendance_overview_course(request: Request, user=Depends(mana
         attendances[a.getDate()] = attendance
     return templates.TemplateResponse("attendance_student.html", {"request": request, "email": user.getEmail(), "course_id": course_id, "course_sec": course_sec, "course_name": course.getName(), "attendanceDict": attendances})
 
+#student assignments page
 @app.get("/Student/Assignment/{course_id}/{course_sec}", response_class=HTMLResponse)
 async def student_assignment(request: Request, course_id: str = None, course_sec: str = None, user=Depends(manager)):
     course = user.getCoursefromid(int(course_id), int(course_sec))
@@ -581,6 +601,7 @@ async def student_assignment(request: Request, course_id: str = None, course_sec
         assignments[a.getCode()] = assignment
     return templates.TemplateResponse("assignment_student.html", {"request": request, "email": user.getEmail(), "course_id": course_id, "course_sec": course_sec, "course_name": course.getName(), "assignmentDict": assignments})
 
+#info of te assignment and submission page
 @app.get("/Student/Assignment/{course_id}/{course_sec}/{code}", response_class=HTMLResponse)
 async def student_assignment_info(request: Request, user=Depends(manager), course_id: str = None, course_sec: str = None, code: str = None):
     course = user.getCoursefromid(int(course_id), int(course_sec))
@@ -620,6 +641,7 @@ async def student_assignment_submission(request: Request, user=Depends(manager),
     transaction.commit()
     return RedirectResponse(url="/Student/Assignment/" + course_id + "/" + course_sec, status_code=302)
 
+# info of the submitted assignment
 @app.get("/Student/Assignment/Completed/{course_id}/{course_sec}/{code}", response_class=HTMLResponse)
 async def completed(request: Request, user=Depends(manager), course_id: str = None, course_sec: str = None, code: str = None):
     course = user.getCoursefromid(int(course_id), int(course_sec))
@@ -640,6 +662,7 @@ async def completed(request: Request, user=Depends(manager), course_id: str = No
     assignment_submission["content"] = content
     return templates.TemplateResponse("assignment_submission_completed.html", {"request": request, "email": user.getEmail(), "course_id": course_id, "course_sec": course_sec, "course_name": course.getName(), "assignment_name": assignment.getName(), "assignment_score": assignment.getMaxScore(), "due_date": assignment.getDueDate(), "due_time": assignment.getDueTime(), "description": assignment.getDescription(), "code": code, "submitted_filenames": assignment_submission, "filenames": attachment, "score_receive": studentAssignment.getScore(), "comment": studentAssignment.getComment(), "submitted_date": studentAssignment.getSubmitDate(), "submitted_time": studentAssignment.getSubmitTime(), "status": studentAssignment.getStatus()})
 
+# page to assign assignments
 @app.get("/Teacher/Assignment/{course_id}/{course_sec}", response_class=HTMLResponse)
 async def teacher_assignment(request: Request, course_id: str = None, course_sec: str = None, user=Depends(manager)):
     course = user.getCourse(int(course_id), int(course_sec))
@@ -685,6 +708,7 @@ async def teacher_assign(user=Depends(manager), course_id: str = None, course_se
     transaction.commit()
     return RedirectResponse(url="/Teacher/Assignment/" + course_id + "/" + course_sec, status_code=302)
 
+# page to check submitted asignments
 @app.get("/Teacher/Assignment/{course_id}/{course_sec}/{code}", response_class=HTMLResponse)
 async def display_submit(request: Request, user=Depends(manager), course_id: str = None, course_sec: str = None, code: str = None):
     course = user.getCourse(int(course_id), int(course_sec))
@@ -749,6 +773,7 @@ async def set_score(user=Depends(manager), course_id: str = None, course_sec: st
     transaction.commit()
     return RedirectResponse(url="/Teacher/Assignment/" + course_id + "/" + course_sec + "/" + code + "/" + id, status_code=302)
 
+#delete assignment
 @app.post("/api/delete-assignment/{course_id}/{course_sec}")
 async def delete_assignment(request: dict, user=Depends(manager), course_id: str = None, course_sec: str = None):
     course = user.getCourse(int(course_id), int(course_sec))
@@ -766,7 +791,8 @@ async def delete_assignment(request: dict, user=Depends(manager), course_id: str
                 del root.studentAssignments[topic_to_delete]
             del root.assignments[topic_to_delete]
             transaction.commit()
-            
+
+#unsubmit assignment    
 @app.post("/api/delete-assignment-submission/{course_id}/{course_sec}/{code}")
 async def delete_assignment(request: dict, user=Depends(manager), course_id: str = None, course_sec: str = None, code: str = None):
     course = user.getCoursefromid(int(course_id), int(course_sec))
@@ -782,6 +808,7 @@ async def delete_assignment(request: dict, user=Depends(manager), course_id: str
             del root.studentAssignments[topic_to_delete]
             transaction.commit()
 
+#student grade overview
 @app.get("/Student/Grade", response_class=HTMLResponse)
 async def student_grade_overview(request: Request, user=Depends(manager)):
     courses = {}
@@ -816,6 +843,7 @@ async def student_grade_overview(request: Request, user=Depends(manager)):
             
     return templates.TemplateResponse("grade_overview_student.html", {"request": request, "email": user.getEmail(), "courseDict": courses, "grades": grades})
 
+#student scores for each course
 @app.get("/Student/Grade/{course_id}/{course_sec}", response_class=HTMLResponse)
 async def student_grade(request: Request, course_id: str = None, course_sec: str = None, user=Depends(manager)):
     course = user.getCoursefromid(int(course_id), int(course_sec))
@@ -861,6 +889,7 @@ async def student_grade(request: Request, course_id: str = None, course_sec: str
         assignments[a.getCode()] = assignment
     return templates.TemplateResponse("grade_student.html", {"request": request, "email": user.getEmail(), "course_sec": course_sec,"course_id": course_id, "assignmentDict": assignments})
 
+# for teacher to overview students' grades of each course and scores of each assignment
 @app.get("/Teacher/Grade/{course_id}/{course_sec}", response_class=HTMLResponse)
 async def teacher_grade_by_assignment(request: Request, course_id: str = None, course_sec: str = None, user=Depends(manager)):
     course = user.getCourse(int(course_id), int(course_sec))
@@ -886,6 +915,7 @@ async def teacher_grade_by_assignment(request: Request, course_id: str = None, c
                         transaction.commit()
         grade = studentCourse.getGrade()
         student["grade"] = grade
+        student["score"] = studentCourse.getTotalScore()
         gradeDict[s.getId()] = student
         
         if 0 <= totalScore < 50:
@@ -905,6 +935,7 @@ async def teacher_grade_by_assignment(request: Request, course_id: str = None, c
     standard_deviation = course.getSD()
     return templates.TemplateResponse("grade_teacher.html", {"request": request, "email": user.getEmail(), "course_id": course_id, "course_sec": course_sec, "course_name": course.getName(), "assignmentDict": assignments, "gradeScheme": gradeScheme, "gradeDict": gradeDict, "mean": mean, "min": min, "max": max, "std": standard_deviation, "score_range": scoreRange})
 
+# for teacher to set student's grades manually
 @app.post ("/Teacher/Grade/{course_id}/{course_sec}", response_class=HTMLResponse)
 async def save(request: Request, user=Depends(manager), course_id: str = None, course_sec: str = None):
     course = user.getCourse(int(course_id), int(course_sec))
@@ -919,6 +950,7 @@ async def save(request: Request, user=Depends(manager), course_id: str = None, c
     transaction.commit()
     return RedirectResponse(url="/Teacher/Grade/" + course_id + "/" + course_sec, status_code=302)
 
+# for teacher to check scores of students in the assignment
 @app.get("/Teacher/Grade/Assignment/{course_id}/{course_sec}/{code}", response_class=HTMLResponse)
 async def teacher_grade_assignment(request: Request, course_id: str = None, course_sec: str = None, user=Depends(manager), code: str = None):
     course = user.getCourse(int(course_id), int(course_sec))
@@ -934,12 +966,12 @@ async def teacher_grade_assignment(request: Request, course_id: str = None, cour
     i = 0
     index = 0
     while i <= int(assignment.getMaxScore()):
-        range = str(i) + " - " + str(i + 10)
+        range = str(i) + " - " + str(i + 5)
         label.append(range)
         for s in course.getStudents():
             studentAssignment = s.getCoursefromid(int(course_id), int(course_sec)).getAssignment(code)
             if isinstance(studentAssignment, StudentAssignment):
-                if i <= studentAssignment.getScore() < (i + 10):
+                if i <= studentAssignment.getScore() < (i + 5):
                     if len(scoreRange) == index:
                         scoreRange.append(1)
                     else:
@@ -947,7 +979,7 @@ async def teacher_grade_assignment(request: Request, course_id: str = None, cour
                 else:
                     if len(scoreRange) == index:
                         scoreRange.append(0)
-        i += 20
+        i += 5
         index += 1
             
     for s in course.getStudents():
@@ -975,6 +1007,7 @@ async def teacher_grade_assignment(request: Request, course_id: str = None, cour
             
     return templates.TemplateResponse("grade_assignment_teacher.html", {"request": request, "email": user.getEmail(), "course_id": course_id, "course_sec": course_sec, "course_name": course.getName(), "studentDict": students, "code": code, "topic": course.getAssignment(code).getName(), "total_score": course.getAssignment(code).getMaxScore(), "percentage": course.getAssignment(code).getWeight(), "min_score": min_score, "max_score": max_score, "mean_score": mean_score, "score_range": scoreRange, "score_label": label})
 
+# teacher's grade over
 @app.get("/Teacher/grade-overview/", response_class=HTMLResponse)
 async def teacher_grade_overview(request: Request, user=Depends(manager)):
     courses = {}
@@ -992,12 +1025,14 @@ async def teacher_grade_overview(request: Request, user=Depends(manager)):
     
     return templates.TemplateResponse("grade_overview_teacher.html", {"request": request, "email": user.getEmail(), "courseDict": courses})
 
+# profile page for user
 @app.get("/profile")
 async def profile(request: Request, user=Depends(manager)):
     if isinstance(user, Student):
         return templates.TemplateResponse("profile_student.html", {"request": request, "email": user.getEmail(), "first_name": user.getFirstName(), "last_name": user.getLastName(), "id": user.getId()})
     return templates.TemplateResponse("profile_teacher.html", {"request": request, "email": user.getEmail(), "first_name": user.getFirstName(), "last_name": user.getLastName()})
 
+# redirect to login page and delete user's cookie
 @app.get("/logout")
 async def logout():
     response = RedirectResponse(url="/login", status_code=302)
