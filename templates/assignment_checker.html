@@ -1,0 +1,172 @@
+{% extends "teacher_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/assignment_checker.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="backBtn">
+        <button type="button" class="backBT" id="backBT" class="saveButton" onclick="window.location.href='/Teacher/Assignment/{{course_id}}/{{course_sec}}/{{code}}'"><img src="{{ url_for('static', path='arrow_icon.png') }}"></button>    
+    </div>
+    <div class="header">
+        <h1>Assignment: {{assignment_name}}</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div><br>
+    <div id="assignmentDetail">
+        <p id="description"> {{description}}</p>
+        <div id="attachment"></div>
+    </div>
+    <div id="submission">
+        <div id="submissionDetail">
+            <p id="student_name"><b>Name: </b>{{student_name}}</p>
+            <p id="student_id"><b>ID: </b>{{id}}</p>
+            <p id="submit_date"><b>Submitted Date: </b>{{submit_date}} {{submit_time}}</p>
+            <p id="submitStatus"></p>
+            <p id="submittedFile"></p>
+        </div>
+        <div id="submitted">
+            <form class="assignment_checked" method="POST" action="/Teacher/Assignment/{{course_id}}/{{course_sec}}/{{code}}/{{id}}">
+                <label for="score">Score: </label>
+                <input type="number" id="score" name="score" min="0" max="{{assignment_score}}" value="{{score}}"> Out of {{assignment_score}}<br><br>
+                <label for="comment">Comment: </label><br>
+                <textarea id="comment" name="comment" rows="4" cols="50">{{comment}}</textarea><br><br>
+                <button type="submit" id="submitScore">Submit</button>
+            </form>
+        </div>
+        <button id="codeDisplay" onclick="codeDisplay()">Code Preview</button>
+    </div>
+    <div id="editor_block">
+        <div id="editor_option">
+            <label id="file_list">File: </label>
+            <select id="files">
+                <option disabled selected value> -- select an option -- </option>
+            </select>
+        </div>
+        <div id= "editor_container">
+            <div id="editor">
+            </div>
+        </div>
+    </div>
+<div>
+<script>
+    var display = false;
+
+    function files(file) {
+        var attachment = document.getElementById("attachment");
+        var innerHTML = "";
+        var filenames = file.filename;
+        if (filenames != []) {
+            for (var i = 0; i < filenames.length; ++i) {
+                innerHTML += "<p><img src='{{url_for('static',path='clip_icon.png')}}' class='clip_icon'/><a href='/static/assignment/uploaded/" + {{course_id}} +"/" + {{course_sec}} + "/" + filenames[i] + "' download>" + filenames[i] + "</a></p>"
+            }
+            attachment.innerHTML = innerHTML;
+        }
+    }
+
+    function submittedFile(file) {
+        var attachment = document.getElementById("submittedFile");
+        var innerHTML = "";
+        var filenames = file.filename;
+        if (filenames != []) {
+            for (var i = 0; i < filenames.length; ++i) {
+                innerHTML += "<p><img src='{{url_for('static',path='clip_icon.png')}}' class='clip_icon'/><a href='/static/assignment/uploaded/" + {{course_id}} +"/" + {{course_sec}} + "/Student/" + filenames[i] + "' download>" + filenames[i] + "</a></p>"
+            }
+            attachment.innerHTML = innerHTML;
+        }
+    }
+
+    function codeDisplay() {
+        fileOption();
+        var editor = document.getElementById("editor_block");
+        if (display == false) {
+            editor.style.display = "block";
+            display = true;
+        } else {
+            editor.style.display = "none";
+            display = false;
+        }
+    }
+
+    files({{attachments | tojson}}, "attachment");
+    submittedFile({{submitted_file | tojson}}, "submittedFile");
+
+    function submitStatus(submit_date, submit_time, due_date, due_time) {
+        var status = document.getElementById("submitStatus");
+        var submit_date_parts = submit_date.split('/')
+        var submit_time_parts = submit_time.split(':')
+        var due_date_parts = due_date.split('-')
+        var due_time_parts = due_time.split(':')
+        if (submit_date_parts[2] > due_date_parts[0] || (submit_date_parts[2] == due_date_parts[0] && submit_date_parts[1] > due_date_parts[1]) || (submit_date_parts[2] == due_date_parts[0] && submit_date_parts[1] == due_date_parts[1] && submit_date_parts[0] > due_date_parts[2]) || (submit_date_parts[2] == due_date_parts[0] && submit_date_parts[1] == due_date_parts[1] && submit_date_parts[0] == due_date_parts[2] && submit_time_parts[0] > due_time_parts[0]) || (submit_date_parts[2] == due_date_parts[0] && submit_date_parts[1] == due_date_parts[1] && submit_date_parts[0] == due_date_parts[2] && submit_time_parts[0] == due_time_parts[0] && submit_time_parts[1] > due_time_parts[1])) {
+            status.innerHTML = "<b>Status: </b>Late";
+        } else {
+            status.innerHTML = "<b>Status: </b>On Time";
+        }
+    }
+
+
+    submitStatus({{submit_date | tojson}}, {{submit_time | tojson}}, {{due_date | tojson}}, {{due_time | tojson}});
+
+    function fileOption() {
+        var files = document.getElementById("files");
+        var file = {{submitted_file | tojson}};
+        var filenames = file.filename;
+        var innerHTML = "";
+        if (filenames != []) {
+            for (var i = 0; i < filenames.length; ++i) {
+                innerHTML += "<option value='" + filenames[i] + "'>" + filenames[i] + "</option>"
+            }
+            files.innerHTML += innerHTML;
+        }
+    }
+
+</script>
+<script src= "{{url_for('static',path='/js/ace.js')}}"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/one_dark");
+    editor.session.setMode("ace/mode/javascript");
+    
+    var files = document.getElementById("files");
+
+    files.addEventListener("change", function() {
+        var lastName = files.options[files.selectedIndex].value.split('.')[1];
+        var mode = "";
+        if (lastName == "js") {
+            mode = "javascript";
+        } else if (lastName == "py") {
+            mode = "python";
+        } else if (lastName == "java" || lastName == "Java") {
+            mode = "java";
+        } else if (lastName == "c") {
+            mode = "c_cpp";
+        } else if (lastName == "cpp") {
+            mode = "c_cpp";
+        } else if (lastName == "html") {
+            mode = "html";
+        } else if (lastName == "css") {
+            mode = "css";
+        } else if (lastName == "r" || lastName == "R") {
+            mode = "r";
+        } else if (lastName == "rs") {
+            mode = "rust";
+        } else if (lastName == "json") {
+            mode = "json";
+        } else if (lastName == "txt") {
+            mode = "text";
+        }
+        editor.session.setMode("ace/mode/" + mode);
+
+        var file = {{submitted_file | tojson}};
+        var filenames = file.filename;
+        var fileContent = file.content;
+        var selectedFile = files.options[files.selectedIndex].value;
+        for (c in fileContent) {
+            if (c == selectedFile) {
+                editor.setValue(fileContent[c]);
+            }
+        }
+    });
+
+</script>
+{%endblock%}
