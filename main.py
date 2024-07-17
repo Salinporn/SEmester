@@ -16,7 +16,7 @@ import os
 class NotAuthenticatedException(Exception):
     pass
 
-SECRET = '5c28e4804aef79ba224172d61a5deed75da9707704f97931'
+SECRET = 'xxx'
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
