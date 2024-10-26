@@ -23,7 +23,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
-manager = LoginManager(SECRET, token_url='/login', use_cookie=True, custom_exception=NotAuthenticatedException)
+manager = LoginManager(SECRET, token_url='/login', use_cookie=True, not_authenticated_exception=NotAuthenticatedException)
 manager.cookie_name = "session"
 
 storage = ZODB.FileStorage.FileStorage('data/userData.fs')
