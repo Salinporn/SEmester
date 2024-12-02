@@ -12,7 +12,6 @@ For Students:
 2. Grade Viewer with Graph: Visualize academic progress through an intuitive graph, gaining insights into performance trends.
 3. Attendance Overview: Keep track of attendance records at a glance.
 4. Interactive Communication: Provide students with a direct channel to contact their teachers for assistance.
-5. Study Tools: Access essential study aids like a scientific calculator, calendar, and a collaborative note-sharing archive.
 
 For Teachers:
 1. Assignment Management: Streamline the assignment process, making it easy to assign and collect work.
