@@ -17,6 +17,5 @@ For Teachers:
 2. Announcement Hub: Communicate announcements seamlessly to the entire class.
 3. Attendance Checker: Effortlessly track and manage student attendance.
 4. Grade Calculator and Class Overview: Evaluate student performance and gain insights into class progress.
-5. Teacher-Student Interaction: Foster a supportive learning environment by providing a space for students to seek assistance.
 
 This group project is created by Thanida Paige Pholsukcharoen and Salinporn Rattanaprapaporn
