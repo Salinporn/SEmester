@@ -944,6 +944,8 @@ async def save(request: Request, user=Depends(manager), course_id: str = None, c
     for s in course.getStudents():
         studentCourse = s.getCoursefromid(int(course_id), int(course_sec))
         grade = form.get("grade_" + str(s.getId()))
+        if not grade in ["A", "B+", "B", "C+", "C", "D+", "D", "F"]:
+            return f"<script> alert(\"Invalid grade\"); window.history.back(); </script>"
         studentCourse.setGrade(grade)
         if studentCourse.getGrade() == "":
             return f"<script> alert(\"Please fill in all the grades\"); window.history.back(); </script>"
