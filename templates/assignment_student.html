@@ -98,7 +98,11 @@
             body: JSON.stringify({ topic: topic }),
         })
         .then(response => {
-            location.reload();
+            if (response.status == 200) {
+                alert("Assignment deleted successfully");
+                location.reload();
+            } else {
+                alert("Failed to delete assignment");
         });
 
     }

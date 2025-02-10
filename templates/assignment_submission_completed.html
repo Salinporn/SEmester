@@ -94,7 +94,12 @@
                 body: JSON.stringify({ topic: topic }),
             })
             .then(response => {
-                window.location.href = "/Student/Assignment/{{course_id}}/{{course_sec}}/{{code}}";
+                if (response.status == 200) {
+                    alert("Unsubmit successfully");
+                    window.location.href = "/Student/Assignment/{{course_id}}/{{course_sec}}/{{code}}";
+                } else {
+                    alert("Unsubmit failed");
+                }
             });
         }
     }
