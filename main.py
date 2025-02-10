@@ -16,14 +16,14 @@ import os
 class NotAuthenticatedException(Exception):
     pass
 
-SECRET = 'secret key'
+SECRET = '5c28e4804aef79ba224172d61a5deed75da9707704f97931'
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
-manager = LoginManager(SECRET, token_url='/login', use_cookie=True, not_authenticated_exception=NotAuthenticatedException)
+manager = LoginManager(SECRET, token_url='/login', use_cookie=True, custom_exception=NotAuthenticatedException)
 manager.cookie_name = "session"
 
 storage = ZODB.FileStorage.FileStorage('data/userData.fs')
@@ -169,6 +169,11 @@ async def unenrolled_home_student(request: dict, user=Depends(manager)):
         if root.studentCourses[s].getId() == int(course_id) and root.studentCourses[s].getSection() == int(course_sec):
             del root.studentCourses[s]
     transaction.commit()
+    
+    if course not in user.getEnrolls():
+        return HTMLResponse(content="Unenrolled success", status_code=200)
+    else:
+        return HTMLResponse(content="Unenrolled failed", status_code=400)
    
 #teacher home page 
 @app.get("/home_teacher", response_class=HTMLResponse)
@@ -434,8 +439,7 @@ async def teacher_announcement_info(user=Depends(manager), course_id: str = None
     for s in user.getCourse(int(course_id), int(course_sec)).getStudents():
         s.getCoursefromid(int(course_id), int(course_sec)).addAnnouncement(root.announcements[topic])
     transaction.commit()
-    redirect = "/Teacher/Announcement/" + course_id + "/" + course_sec
-    return RedirectResponse(url=redirect,status_code=302)
+    return RedirectResponse(url="/Teacher/Announcement/" + course_id + "/" + course_sec, status_code=302)
 
 #delete announcement
 @app.post("/api/delete-announcement/{course_id}/{course_sec}")
@@ -453,6 +457,11 @@ async def delete_announcement(request: dict, user=Depends(manager), course_id: s
                     os.remove("static/announcement/uploaded/" + course_id + "/" + course_sec + "/" + f)
             del root.announcements[topic_to_delete]
             transaction.commit()
+    
+    if not root.announcements.get(topic_to_delete):
+        return HTMLResponse(content="announcement deleted successfully", status_code=200)
+    else:
+        return HTMLResponse(content="announcement deletion failed", status_code=400)
 
 #list of dates of class for teacher to check attendance
 @app.get("/Teacher/Attendance/{course_id}/{course_sec}", response_class=HTMLResponse)
@@ -482,8 +491,7 @@ async def teacher_attendance_dates_info(teacher=Depends(manager), course_id: str
         studentCourse.addAttendance(root.studentAttendances[formatted_date])
     transaction.commit()
 
-    redirect = f"/Teacher/Attendance/{course_id}/{course_sec}"
-    return RedirectResponse(url=redirect, status_code=302)
+    return RedirectResponse(url=f"/Teacher/Attendance/{course_id}/{course_sec}", status_code=302)
 
 #delete attendance datte
 @app.post("/api/delete-attendanceDate/{course_id}/{course_sec}")
@@ -791,6 +799,11 @@ async def delete_assignment(request: dict, user=Depends(manager), course_id: str
                 del root.studentAssignments[topic_to_delete]
             del root.assignments[topic_to_delete]
             transaction.commit()
+            
+    if not root.assignments.get(topic_to_delete):
+        return HTMLResponse(content="assignment deleted successfully", status_code=200)
+    else:
+        return HTMLResponse(content="assignment not deleted", status_code=400)
 
 #unsubmit assignment    
 @app.post("/api/delete-assignment-submission/{course_id}/{course_sec}/{code}")
@@ -807,6 +820,10 @@ async def delete_assignment(request: dict, user=Depends(manager), course_id: str
                     os.remove("static/assignment/uploaded/" + course_id + "/" + course_sec + "/" + "Student/" + f)
             del root.studentAssignments[topic_to_delete]
             transaction.commit()
+    if not root.studentAssignments.get(topic_to_delete):
+        return HTMLResponse(content="unsubmitted successfully", status_code=200)
+    else:
+        return HTMLResponse(content="unsubmitted failed", status_code=400)
 
 #student grade overview
 @app.get("/Student/Grade", response_class=HTMLResponse)
@@ -820,7 +837,6 @@ async def student_grade_overview(request: Request, user=Depends(manager)):
         course["sec"] = c.getSection()
         course["grade"] = c.getGrade()
         course["credit"] = c.getCredit()
-        course["grade"] = c.getGrade()
         course["currentScore"] = c.getTotalScore()
         courses[c.getId()] = course
         
@@ -1005,8 +1021,7 @@ async def teacher_grade_assignment(request: Request, course_id: str = None, cour
                     student["score"] = 0
         students[s.getId()] = student
     if total_student != 0:
-        mean_score = total_score / total_student
-            
+        mean_score = total_score / total_student  
     return templates.TemplateResponse("grade_assignment_teacher.html", {"request": request, "email": user.getEmail(), "course_id": course_id, "course_sec": course_sec, "course_name": course.getName(), "studentDict": students, "code": code, "topic": course.getAssignment(code).getName(), "total_score": course.getAssignment(code).getMaxScore(), "percentage": course.getAssignment(code).getWeight(), "min_score": min_score, "max_score": max_score, "mean_score": mean_score, "score_range": scoreRange, "score_label": label})
 
 # teacher's grade over

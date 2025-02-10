@@ -1,0 +1,51 @@
+{% extends "student_header.html" %}
+
+{%block head%}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',path='/css/announcement_student.css')}}">
+{%endblock%}
+{%block content%}
+<div class="wholePage">
+    <div class="header">
+        <h1>Announcement</h1>
+        {{course_name}} ({{course_id}} Section: {{course_sec}})
+    </div>
+    <div class="announcementList" id="announcementList"></div>
+<div>
+<script>
+    
+    function displayAnnouncement(announcementDict) {
+        let announcementList = document.getElementById("announcementList");
+        let innerHTML = "";
+        for (var key in announcementDict) {
+            var announcement = announcementDict[key];
+            innerHTML += "<div class='announcement'><button id='showBT' class='showBT'>" + key + " (" + announcement.date + ")<p class='showmore_less'>+</p>" + "</button><span class='more'>" + announcement.content + "<br>";
+            if (announcement.file != []) {
+                for (var i = 0; i < announcement.filename.length; i++) {
+                    innerHTML += "<a class='upload' href='/static/announcement/uploaded/" + {{course_id}} +"/" + {{course_sec}} + announcement.filename[i] + "' download>" + announcement.filename[i] + "</a><br>";
+                }
+            }
+        }
+        announcementList.innerHTML = innerHTML;
+    }
+    displayAnnouncement({{announcement|tojson}});
+
+    var coll = document.getElementsByClassName("showBT");
+    
+    for (var i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        var more_less = this.querySelector(".showmore_less");
+        if (content.style.display == "none") {
+            content.style.display = "block";
+            more_less.innerHTML = "-";
+        } else {
+            content.style.display = "none";
+            more_less.innerHTML = "+";
+        }
+      });
+    }
+    
+</script>
+{%endblock%}

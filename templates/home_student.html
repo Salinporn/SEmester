@@ -70,7 +70,12 @@
             })
         })
         .then(response => {
-            location.reload();
+            if (response.status == 200) {
+                alert('Unenrolled successfully');
+                location.reload();
+            } else if (response.status == 400 && response.content == 'Unenrolled failed') {
+                alert('Unenroll failed');
+            }
         });
     }
 </script>
